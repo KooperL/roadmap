@@ -57,3 +57,30 @@ export const getCard = async (cardId: string) => {
 		}));
 	}
 }
+
+export const newCard = async (details: any) => {
+	try {
+		logger.info('getTenants hook', 'Hook called');
+		cards.update((state) => ({
+			status: 'loading',
+			errorMessage: undefined,
+			data: undefined
+		}));
+		const pbTenants = await pb.collection('cards').create({
+            
+        });
+		cards.update((state) => ({
+			errorMessage: undefined,
+			status: fetchStatus.success,
+			data: pbTenants.items
+		}));
+		logger.debug('getTenants hook', 'Tenants fetched');
+	} catch (e: any) {
+		logger.error('getTenants hook', e.message);
+		cards.update((state) => ({
+			status: fetchStatus.error,
+			data: undefined,
+			errorMessage: e.message
+		}));
+	}
+}
