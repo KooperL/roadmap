@@ -10,7 +10,7 @@ export const getCards = async (projectId: string) => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const pbTenants = await pb.collection('cards').getList(1, 50, {
+		const pbTenants = await pb.collection('card').getList(1, 50, {
 			// filter: 'project = "projectId"',
 			expand: 'tenant'
 		});
@@ -38,7 +38,7 @@ export const getCard = async (cardId: string) => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const pbTenants = await pb.collection('cards').getList(1, 50, {
+		const pbTenants = await pb.collection('card').getList(1, 50, {
 			// filter: 'id = "cardId"',
 			expand: 'comments'
 		});
