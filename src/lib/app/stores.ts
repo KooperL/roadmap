@@ -39,5 +39,29 @@ export const cards = writable<WritableState<any>>({
 	errorMessage: undefined
 });
 
+export const card = writable<WritableState<any>>({
+	status: fetchStatus.idle,
+	data: undefined,
+	errorMessage: undefined
+});
+
+export const cardUpdate = writable<WritableState<any>>({
+	status: fetchStatus.idle,
+	data: undefined,
+	errorMessage: undefined
+});
+
+export const cardCreate = writable<WritableState<any>>({
+	status: fetchStatus.idle,
+	data: undefined,
+	errorMessage: undefined
+});
+
+export const cardDelete = writable<WritableState<any>>({
+	status: fetchStatus.idle,
+	data: undefined,
+	errorMessage: undefined
+});
+
 export const primaryProject = writable<string>('');
 
