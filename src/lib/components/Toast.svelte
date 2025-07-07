@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { toastStore, ToastType } from '$lib/stores/toast';
+    import { toastStore, ToastType } from '$lib/app/toast';
     import { ExclamationCircleOutline, FireOutline, CheckCircleOutline, CloseCircleOutline } from 'flowbite-svelte-icons';
     import { Toast as FlowbiteToast } from 'flowbite-svelte';
 

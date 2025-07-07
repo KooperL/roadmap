@@ -65,7 +65,7 @@ export const newCard = async (details: any) => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const newCardResult = await pb.collection('cards').create({
+		const newCardResult = await pb.collection('card').create({
             title: details.title,
 			body: details.body,
 			status: details.status,
@@ -95,7 +95,7 @@ export const updateCard = async (id: string, details: any) => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const updatedCardResult = await pb.collection('cards').update(id, {
+		const updatedCardResult = await pb.collection('card').update(id, {
 			title: details.title,
             body: details.body,
 			status: details.status,
@@ -124,7 +124,7 @@ export const deleteCard = async (id: string) => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const cardDeleteResult = await pb.collection('cards').delete(id);
+		const cardDeleteResult = await pb.collection('card').delete(id);
 		cards.update((state) => ({
 			errorMessage: undefined,
 			status: fetchStatus.success,
