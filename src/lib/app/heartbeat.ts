@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/public';
 import fetchCustomEndpoint, { pocketbaseCustomEndpoints } from '$lib/api/pocketbaseCustom';
-import { toast } from '$lib/stores/toast';
+import { toast } from '$lib/app/toast';
 
 const HEARTBEAT_INTERVAL = 20000; // 20 seconds
 

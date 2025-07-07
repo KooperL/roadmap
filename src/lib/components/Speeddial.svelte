@@ -24,7 +24,7 @@
 	import Navbar from '$lib/components/Navbar.svelte';
 	import { site } from '$lib/config';
 	import { metadata } from '$lib/app/stores';
-	import { toast } from '$lib/stores/toast';
+	import { toast } from '$lib/app/toast';
 
 	let speedDialOpen = false;
 	let modalOpen = false;
