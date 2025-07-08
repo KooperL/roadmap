@@ -1,4 +1,4 @@
-import { cardCreate, cards, cardUpdate, fetchStatus } from "../app/stores";
+import { card, cardCreate, cards, cardUpdate, fetchStatus } from "../app/stores";
 import { logger } from "../logger";
 import { pb } from "../pocketbase";
 
@@ -32,24 +32,24 @@ export const getCards = async (projectId: string) => {
 export const getCard = async (cardId: string) => {
 	try {
 		logger.info('getCard hook', 'Hook called');
-		cards.update((state) => ({
+		card.update((state) => ({
 			status: 'loading',
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const cardResult = await pb.collection('card').getList(1, 50, {
+		const cardResult = await pb.collection('card').getOne(cardId, {
 			// filter: 'id = "cardId"',
 			expand: 'comment'
 		});
-		cards.update((state) => ({
+		card.update((state) => ({
 			errorMessage: undefined,
 			status: fetchStatus.success,
-			data: cardResult.items
+			data: cardResult
 		}));
 		logger.debug('getCard hook', 'Card fetched');
 	} catch (e: any) {
 		logger.error('getCard hook', e.message);
-		cards.update((state) => ({
+		card.update((state) => ({
 			status: fetchStatus.error,
 			data: undefined,
 			errorMessage: e.message
