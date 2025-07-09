@@ -1,3 +1,23 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+body {
+  @apply bg-gray-50 text-gray-900 font-sans min-h-screen antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @apply font-bold text-gray-800;
+}
+
+a {
+  @apply text-secondary-600 hover:text-secondary-800 transition-colors underline;
+}
+
+button {
+  @apply px-4 py-2 rounded-lg bg-primary-600 text-white font-semibold shadow-xl hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400;
+}
+
+input, textarea, select {
+  @apply border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-secondary-300;
+}

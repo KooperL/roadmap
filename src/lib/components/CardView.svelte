@@ -39,69 +39,68 @@
   }
 </script>
 
-<div class="cardview-backdrop" on:click|self={close}>
-  <div class="cardview">
+<div class="fixed inset-0 z-[1000] flex items-center justify-center bg-gradient-to-br from-primary-100/60 via-white/70 to-secondary-100/60 backdrop-blur-[6px] transition-all duration-300" on:click|self={close}>
+  <div class="relative bg-white/80 border border-gray-200 shadow-2xl rounded-3xl p-8 min-w-[320px] max-w-[95vw] max-h-[90vh] w-full sm:w-[420px] flex flex-col gap-2 overflow-auto animate-fade-in">
     {#if $card.status === fetchStatus.loading || $card.status === fetchStatus.idle}
-      <p>Loading card...</p>
+      <p class="text-gray-500 text-lg animate-pulse">Loading card...</p>
     {:else if $card.status === fetchStatus.error}
-      <p>Error loading card: {$card.errorMessage}</p>
+      <p class="text-red-600 text-lg">Error loading card: {$card.errorMessage}</p>
     {:else if $card.data}
       {#if editing}
-        <input type="text" bind:value={title} style="font-size:1.5em; width:100%;" />
-        <div>
-          <label>Status:</label>
-          <input type="text" bind:value={status} />
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-200 to-secondary-200 flex items-center justify-center text-primary-700 font-bold text-2xl shadow-inner">
+            {title?.charAt(0) ?? '?'}
+          </div>
+          <input type="text" bind:value={title} placeholder="Title" class="text-2xl font-bold w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-300 bg-white/80" />
         </div>
-        <div>
-          <label>Body:</label>
-          <textarea bind:value={body} rows="5" style="width:100%;"></textarea>
+        <div class="mb-4">
+          <label class="block text-sm font-semibold mb-1">Status:</label>
+          <input type="text" bind:value={status} class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-300 bg-white/80" />
         </div>
-        <div class="actions">
-          <button on:click={handleSave}>Save</button>
-          <button on:click={() => editing = false}>Cancel</button>
-          <button on:click={handleDelete} style="color: red;">Delete</button>
-          <button on:click={close}>Close</button>
+        <div class="mb-4">
+          <label class="block text-sm font-semibold mb-1">Body:</label>
+          <textarea bind:value={body} rows="5" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-300 bg-white/80"></textarea>
+        </div>
+        <div class="flex gap-3 mt-8 border-t border-gray-100 pt-6">
+          <button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-primary-600 to-secondary-500 text-white font-semibold shadow hover:scale-105 hover:shadow-2xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-400" on:click={handleSave}>
+            <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 13l4 4L19 7' /></svg>
+            Save
+          </button>
+          <button class="px-4 py-2 rounded-lg bg-secondary-100 text-secondary-800 font-semibold shadow hover:bg-secondary-200 transition-colors focus:outline-none" on:click={() => editing = false}>Cancel</button>
+          <button class="px-4 py-2 rounded-lg bg-red-100 text-red-700 font-semibold shadow hover:bg-red-200 transition-colors focus:outline-none" on:click={handleDelete}>Delete</button>
+          <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 font-semibold shadow hover:bg-gray-200 transition-colors focus:outline-none" on:click={close}>Close</button>
         </div>
       {:else}
-        <h2>{title}</h2>
-        <div><strong>Status:</strong> {status}</div>
-        <div><strong>Body:</strong></div>
-        <div>{body}</div>
-        <div class="actions">
-          <button on:click={() => editing = true}>Edit</button>
-          <button on:click={handleDelete} style="color: red;">Delete</button>
-          <button on:click={close}>Close</button>
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-200 to-secondary-200 flex items-center justify-center text-primary-700 font-bold text-2xl shadow-inner">
+            {title?.charAt(0) ?? '?'}
+          </div>
+          <h2 class="text-2xl font-bold text-primary-800 flex-1">{title}</h2>
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-primary-100 text-primary-700 border border-primary-200 shadow-sm">{status}</span>
+        </div>
+        <div class="mb-2 border-b border-gray-100 pb-2"><span class="text-xs text-gray-400">Card Details</span></div>
+        <div class="mb-4 whitespace-pre-line text-gray-700 text-base leading-relaxed">{body}</div>
+        <div class="flex gap-3 mt-8 border-t border-gray-100 pt-6">
+          <button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-secondary-600 to-primary-500 text-white font-semibold shadow hover:scale-105 hover:shadow-2xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary-400" on:click={() => editing = true}>
+            <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15.232 5.232l3.536 3.536M9 11l6 6M3 21h6v-6l9-9a2.828 2.828 0 10-4-4l-9 9z' /></svg>
+            Edit
+          </button>
+          <button class="px-4 py-2 rounded-lg bg-red-100 text-red-700 font-semibold shadow hover:bg-red-200 transition-colors focus:outline-none" on:click={handleDelete}>Delete</button>
+          <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 font-semibold shadow hover:bg-gray-200 transition-colors focus:outline-none" on:click={close}>Close</button>
         </div>
       {/if}
     {:else}
-      <p>Card not found.</p>
+      <p class="text-gray-400 italic">Card not found.</p>
     {/if}
   </div>
 </div>
 
 <style>
-  .cardview-backdrop {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
-  .cardview {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    min-width: 300px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.2);
-    max-width: 90vw;
-    max-height: 90vh;
-    overflow: auto;
-  }
-  .actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-fade-in {
+  animation: fade-in 0.35s cubic-bezier(.4,0,.2,1);
+}
 </style>
