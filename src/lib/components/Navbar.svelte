@@ -17,13 +17,13 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { site } from '$lib/config';
-	import { fetchStatus, cards } from '$lib/app/stores';
+	import { fetchStatus, cardsState } from '$lib/app/stores';
 	import { onMount } from 'svelte';
 	import { getCards } from '$lib/hooks/cards';
 	let formModal = true;
 
 	onMount(async () => {
-		if ($cards.status !== fetchStatus.success) {
+		if ($cardsState.status !== fetchStatus.success) {
 			await getCards('-1');
 		}
 	});

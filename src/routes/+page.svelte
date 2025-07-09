@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { getCards } from '$lib/hooks/cards';
-  import { fetchStatus, cards } from '$lib/app/stores';
+  import { fetchStatus, cardsState } from '$lib/app/stores';
   import CardEditor from '$lib/components/CardCreator.svelte';
   import CardView from '$lib/components/CardView.svelte';
   import LandCard from '$lib/components/LandCard.svelte';
@@ -16,11 +16,11 @@
   let hoveredStatus: string | null = null;
 
   function getCardsByStatus(status: string): any[] {
-    return $cards.data.filter((card: any) => card.status === status);
+    return $cardsState.data.filter((card: any) => card.status === status);
   }
 
   onMount(async () => {
-    if ($cards.status !== fetchStatus.success) {
+    if ($cardsState.status !== fetchStatus.success) {
         await getCards('');
     }
   });
@@ -66,18 +66,14 @@
     const cardId = event.dataTransfer!.getData('text/plain');
     if (!cardId) return;
 
-    // Find the card and update its status
-    const card = $cards.data.find((c: any) => c.id === cardId);
+    const card = $cardsState.data.find((c: any) => c.id === cardId);
     if (card && card.status !== targetStatus) {
-      // Update the card status
       const { updateCard } = await import('$lib/hooks/cards');
       await updateCard(cardId, { ...card, status: targetStatus });
       
-      // Refresh the cards data
       await getCards('');
     }
     
-    // Reset drag state
     isDragging = false;
     draggedCardId = null;
     draggedFromStatus = null;
@@ -89,7 +85,6 @@
   }
 </script>
 
-<!-- Background and Header -->
 <div class="min-h-screen w-full bg-gradient-to-br from-secondary-50 via-white to-primary-100 flex flex-col items-center py-12 px-2">
   <header class="mb-10 text-center">
     <h1 class="text-4xl md:text-5xl font-extrabold text-primary-800 drop-shadow-sm tracking-tight mb-2 flex items-center justify-center gap-3">
@@ -112,10 +107,10 @@
   {#if showCardView && selectedCardId}
     <CardView cardId={selectedCardId} on:close={() => showCardView = false} />
   {/if}
-  {#if $cards.status === fetchStatus.loading || $cards.status === fetchStatus.idle}
+  {#if $cardsState.status === fetchStatus.loading || $cardsState.status === fetchStatus.idle}
     <p class="text-gray-500 text-lg mt-8 animate-pulse">Loading cards...</p>
-  {:else if $cards.status === fetchStatus.error}
-    <p class="text-red-600 text-lg mt-8">Error pulling the cards: {$cards.errorMessage}</p>
+  {:else if $cardsState.status === fetchStatus.error}
+    <p class="text-red-600 text-lg mt-8">Error pulling the cards: {$cardsState.errorMessage}</p>
   {:else}
     <div class="w-full max-w-7xl flex flex-col md:flex-row gap-8 mt-8">
       {#each STATUSES as status}
