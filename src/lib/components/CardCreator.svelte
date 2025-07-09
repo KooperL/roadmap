@@ -1,8 +1,8 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { newCard } from '../hooks/cards';
-  import { cardCreate } from '../app/stores';
   import { onDestroy } from 'svelte';
+	import { createCardState } from '$lib/app/stores';
+	import { createCard } from '$lib/hooks/cards';
 
   const dispatch = createEventDispatcher();
 
@@ -13,7 +13,7 @@
   let unsubscribe: () => void;
 
   // Listen for card creation status
-  unsubscribe = cardCreate.subscribe(($state) => {
+  unsubscribe = createCardState.subscribe(($state) => {
     if ($state.status === 'success') {
       dispatch('close');
     }
@@ -24,7 +24,7 @@
   });
 
   async function submit() {
-    await newCard({ title, body, status });
+    await createCard({ title, body, status });
   }
 
   function close() {

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { getCard, updateCard, deleteCard, getCards, cardComment } from '../hooks/cards';
-  import { card, fetchStatus } from '../app/stores';
+  import { cardState, fetchStatus } from '../app/stores';
   import { createEventDispatcher } from 'svelte';
 
   export let cardId: string;
@@ -17,10 +17,10 @@
     await getCard(cardId);
   });
 
-  $: if ($card.data && !editing) {
-    title = $card.data.title;
-    body = $card.data.body;
-    status = $card.data.status;
+  $: if ($cardState.data && !editing) {
+    title = $cardState.data.title;
+    body = $cardState.data.body;
+    status = $cardState.data.status;
   }
 
   async function handleSave() {
@@ -49,11 +49,11 @@
 
 <div class="fixed inset-0 z-[1000] flex items-center justify-center bg-gradient-to-br from-primary-100/60 via-white/70 to-secondary-100/60 backdrop-blur-[6px] transition-all duration-300" on:click|self={close}>
   <div class="relative bg-white/80 border border-gray-200 shadow-2xl rounded-3xl p-8 min-w-[320px] max-w-[95vw] max-h-[90vh] w-full sm:w-[420px] flex flex-col gap-2 overflow-auto animate-fade-in">
-    {#if $card.status === fetchStatus.loading || $card.status === fetchStatus.idle}
+    {#if $cardState.status === fetchStatus.loading || $cardState.status === fetchStatus.idle}
       <p class="text-gray-500 text-lg animate-pulse">Loading card...</p>
-    {:else if $card.status === fetchStatus.error}
-      <p class="text-red-600 text-lg">Error loading card: {$card.errorMessage}</p>
-    {:else if $card.data}
+    {:else if $cardState.status === fetchStatus.error}
+      <p class="text-red-600 text-lg">Error loading card: {$cardState.errorMessage}</p>
+    {:else if $cardState.data}
       {#if editing}
         <div class="flex items-center gap-3 mb-6">
           <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-200 to-secondary-200 flex items-center justify-center text-primary-700 font-bold text-2xl shadow-inner">
@@ -112,8 +112,8 @@
           </button>
         </div>
         <div class="flex flex-col gap-3">
-          {#if $card.data?.expand?.comment_via_card?.length}
-            {#each $card.data.expand.comment_via_card as commentObject}
+          {#if $cardState.data?.expand?.comment_via_card?.length}
+            {#each $cardState.data.expand.comment_via_card as commentObject}
               <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
                 <div class="text-xs text-gray-400 mb-1">{(new Date(commentObject.created)).toLocaleString()}</div>
                 <div class="text-gray-700 text-sm whitespace-pre-line">{commentObject.body}</div>

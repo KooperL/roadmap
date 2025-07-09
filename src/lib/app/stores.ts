@@ -33,37 +33,37 @@ export const projects = writable<WritableState<any>>({
 	errorMessage: undefined
 });
 
-export const commentCreate = writable<WritableState<any>>({
+export const commentCreateState = writable<WritableState<any>>({
 	status: fetchStatus.idle,
 	data: undefined,
 	errorMessage: undefined
 });
 
-export const cards = writable<WritableState<any>>({
+export const cardsState = writable<WritableState<any>>({
 	status: fetchStatus.idle,
 	data: undefined,
 	errorMessage: undefined
 });
 
-export const card = writable<WritableState<any>>({
+export const cardState = writable<WritableState<any>>({
 	status: fetchStatus.idle,
 	data: undefined,
 	errorMessage: undefined
 });
 
-export const cardUpdate = writable<WritableState<any>>({
+export const updateCardState = writable<WritableState<any>>({
 	status: fetchStatus.idle,
 	data: undefined,
 	errorMessage: undefined
 });
 
-export const cardCreate = writable<WritableState<any>>({
+export const createCardState = writable<WritableState<any>>({
 	status: fetchStatus.idle,
 	data: undefined,
 	errorMessage: undefined
 });
 
-export const cardDelete = writable<WritableState<any>>({
+export const deleteCardState = writable<WritableState<any>>({
 	status: fetchStatus.idle,
 	data: undefined,
 	errorMessage: undefined
