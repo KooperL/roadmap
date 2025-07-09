@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { getCard, updateCard, deleteCard } from '../hooks/cards';
+  import { getCard, updateCard, deleteCard, getCards, cardComment } from '../hooks/cards';
   import { card, fetchStatus } from '../app/stores';
   import { createEventDispatcher } from 'svelte';
 
@@ -11,6 +11,7 @@
   let title = '';
   let body = '';
   let status = '';
+  let commentDraft = '';
 
   onMount(async () => {
     await getCard(cardId);
@@ -25,8 +26,15 @@
   async function handleSave() {
     await updateCard(cardId, { title, body, status });
     editing = false;
-    await getCard(cardId); // Refresh data
+    await getCard(cardId);
+    getCards('');
     dispatch('updated');
+  }
+
+  async function handleCommentSubmit() {
+    await cardComment(cardId, commentDraft);
+    commentDraft = '';
+    await getCard(cardId);
   }
 
   async function handleDelete() {
@@ -87,6 +95,33 @@
           </button>
           <button class="px-4 py-2 rounded-lg bg-red-100 text-red-700 font-semibold shadow hover:bg-red-200 transition-colors focus:outline-none" on:click={handleDelete}>Delete</button>
           <button class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 font-semibold shadow hover:bg-gray-200 transition-colors focus:outline-none" on:click={close}>Close</button>
+        </div>
+        <h3 class="mt-10 mb-2 text-lg font-semibold text-primary-800">Comments</h3>
+        <div class="mb-4 flex items-center gap-2">
+          <input
+            placeholder="Is there anything you'd like to add?"
+            bind:value={commentDraft}
+            class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-300 bg-white/80 text-sm"
+          />
+          <button
+            class="px-4 py-2 rounded-lg bg-primary-500 text-white font-semibold shadow hover:bg-primary-600 transition-colors focus:outline-none"
+            on:click={handleCommentSubmit}
+            disabled={!commentDraft.trim()}
+          >
+            Post
+          </button>
+        </div>
+        <div class="flex flex-col gap-3">
+          {#if $card.data?.expand?.comment_via_card?.length}
+            {#each $card.data.expand.comment_via_card as commentObject}
+              <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                <div class="text-xs text-gray-400 mb-1">{(new Date(commentObject.created)).toLocaleString()}</div>
+                <div class="text-gray-700 text-sm whitespace-pre-line">{commentObject.body}</div>
+              </div>
+            {/each}
+          {:else}
+            <div class="text-gray-400 italic text-sm">No comments yet.</div>
+          {/if}
         </div>
       {/if}
     {:else}

@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { getCards } from '$lib/hooks/cards';
   import { fetchStatus, cards } from '$lib/app/stores';
-  import CardEditor from '$lib/components/CardEditor.svelte';
+  import CardEditor from '$lib/components/CardCreator.svelte';
   import CardView from '$lib/components/CardView.svelte';
   import LandCard from '$lib/components/LandCard.svelte';
 

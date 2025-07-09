@@ -1,6 +1,11 @@
-TODO: 
-Trackable body updates
-Priority
-Custom status state machine
-Projects
-Users
+# TODO: 
+ - Ticket types + custom ticket types
+ - Versioned/append only ticket details
+ - Ticket priority
+ - Ticket labels
+ - Custom status state machine (npm xstate? Seems hard when considering FE interface)
+ - Projects
+ - Users, access/invitations and roles
+
+# In progress:
+ - Ticket comments
