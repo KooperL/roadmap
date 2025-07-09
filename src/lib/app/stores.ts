@@ -33,6 +33,12 @@ export const projects = writable<WritableState<any>>({
 	errorMessage: undefined
 });
 
+export const commentCreate = writable<WritableState<any>>({
+	status: fetchStatus.idle,
+	data: undefined,
+	errorMessage: undefined
+});
+
 export const cards = writable<WritableState<any>>({
 	status: fetchStatus.idle,
 	data: undefined,

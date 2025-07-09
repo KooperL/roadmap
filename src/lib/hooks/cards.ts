@@ -1,4 +1,4 @@
-import { card, cardCreate, cards, cardUpdate, fetchStatus } from "../app/stores";
+import { card, cardCreate, cards, cardUpdate, commentCreate, fetchStatus } from "../app/stores";
 import { logger } from "../logger";
 import { pb } from "../pocketbase";
 
@@ -38,8 +38,7 @@ export const getCard = async (cardId: string) => {
 			data: undefined
 		}));
 		const cardResult = await pb.collection('card').getOne(cardId, {
-			// filter: 'id = "cardId"',
-			expand: 'comment'
+			expand: `comment_via_card`,
 		});
 		card.update((state) => ({
 			errorMessage: undefined,
@@ -100,7 +99,7 @@ export const updateCard = async (id: string, details: any) => {
             body: details.body,
 			status: details.status,
         });
-		updatedCardResult.update((state) => ({
+		cardUpdate.update((state) => ({
 			errorMessage: undefined,
 			status: fetchStatus.success,
 			data: updatedCardResult.items
@@ -143,25 +142,25 @@ export const deleteCard = async (id: string) => {
 
 export const cardComment = async (cardId: string, comment: string) => {
 	try {
-		logger.info('getTenants hook', 'Hook called');
-		cards.update((state) => ({
+		logger.info('cardComment hook', 'Hook called');
+		commentCreate.update((state) => ({
 			status: 'loading',
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const pbTenants = await pb.collection('comment').create({
+		const commentCreateResponse = await pb.collection('comment').create({
 			card: cardId,
 			body: comment
 		});
-		cards.update((state) => ({
+		commentCreate.update((state) => ({
 			errorMessage: undefined,
 			status: fetchStatus.success,
-			data: pbTenants.items
+			data: commentCreateResponse.items
 		}));
-		logger.debug('getTenants hook', 'Tenants fetched');
+		logger.debug('cardComment hook', 'Tenants fetched');
 	} catch (e: any) {
-		logger.error('getTenants hook', e.message);
-		cards.update((state) => ({
+		logger.error('cardComment hook', e.message);
+		commentCreate.update((state) => ({
 			status: fetchStatus.error,
 			data: undefined,
 			errorMessage: e.message
