@@ -48,7 +48,7 @@ class Logger {
 		};
 
 		try {
-			return await fetch(url, options);
+			// return await fetch(url, options);
 		} catch (e) {
 			console.error('Network error during logging:', e);
 			throw e;

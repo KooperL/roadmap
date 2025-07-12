@@ -1,4 +1,4 @@
-import { cardsState, cardState, commentCreateState, createCardState, deleteCardState, fetchStatus, updateCardState } from "../app/stores";
+import { cardsState, cardState, commentCreateState, createCardState, deleteCardState, fetchCreateTagState, fetchStatus, updateCardState } from "../app/stores";
 import { logger } from "../logger";
 import { pb } from "../pocketbase";
 
@@ -38,7 +38,7 @@ export const getCard = async (cardId: string) => {
 			data: undefined
 		}));
 		const fetchCardResult = await pb.collection('card').getOne(cardId, {
-			expand: `comment_via_card`,
+			expand: ['comment_via_card', 'tags'].join(','),
 		});
 		cardState.update((state) => ({
 			errorMessage: undefined,
@@ -49,6 +49,47 @@ export const getCard = async (cardId: string) => {
 	} catch (e: any) {
 		logger.error('getCard hook', e.message);
 		cardState.update((state) => ({
+			status: fetchStatus.error,
+			data: undefined,
+			errorMessage: e.message
+		}));
+	}
+}
+
+export const fetchCreateTags = async (projectId: string, tags: string[]) => {
+	try {
+		logger.info('fetchCreateTags hook', 'Hook called');
+		fetchCreateTagState.update((state) => ({
+			status: fetchStatus.loading,
+			errorMessage: undefined,
+			data: undefined
+		}));
+		const initialFetch = await pb.collection('tags').getFullList({
+			filter: tags.map((tag) => `name="${tag}"`).join('||')
+			// filter: 'project = "projectId"'
+    });
+    const initialFetchTags = initialFetch.map(record => record.name)
+    const missingTags = tags.filter(tagString => {
+      return !initialFetchTags.includes(tagString)
+    })
+    let createdTags = []
+    for (let i = 0; i < missingTags.length; i++) {
+      const missingTag = missingTags[i]
+      const createMissingTag = await pb.collection('tags').create({
+        // projectId: projectId,
+        name: missingTag
+      })
+      createdTags.push(createMissingTag)
+    }
+		fetchCreateTagState.update((state) => ({
+			errorMessage: undefined,
+			status: fetchStatus.success,
+			data: [...initialFetch, ...createdTags]
+		}));
+		logger.debug('fetchCreateTags hook', 'Tag IDs fetched');
+	} catch (e: any) {
+		logger.error('fetchCreateTags hook', e.message);
+		fetchCreateTagState.update((state) => ({
 			status: fetchStatus.error,
 			data: undefined,
 			errorMessage: e.message
@@ -68,6 +109,7 @@ export const createCard = async (details: any) => {
       title: details.title,
 			body: details.body,
 			status: details.status,
+      tags: details.tags
     });
 		createCardState.update((state) => ({
 			errorMessage: undefined,
@@ -98,6 +140,9 @@ export const updateCard = async (id: string, details: any) => {
 			title: details.title,
       body: details.body,
 			status: details.status,
+      'tags-': details['tags-'],
+      'tags+': details['tags+'],
+      tags: details.tags
     });
 		updateCardState.update((state) => ({
 			errorMessage: undefined,

@@ -69,5 +69,12 @@ export const deleteCardState = writable<WritableState<any>>({
 	errorMessage: undefined
 });
 
+
+export const fetchCreateTagState = writable<WritableState<any>>({
+	status: fetchStatus.idle,
+	data: undefined,
+	errorMessage: undefined
+});
+
 export const primaryProject = writable<string>('');
 

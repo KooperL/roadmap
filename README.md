@@ -1,11 +1,9 @@
 # TODO: 
- - Ticket types + custom ticket types
  - Versioned/append only ticket details
  - Ticket priority
- - Ticket labels
  - Custom status state machine (npm xstate? Seems hard when considering FE interface)
  - Projects
  - Users, access/invitations and roles
 
 # In progress:
- - Ticket comments
+ - Ticket types + custom ticket types

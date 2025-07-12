@@ -1,8 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { getCard, updateCard, deleteCard, getCards, cardComment } from '../hooks/cards';
-  import { cardState, fetchStatus } from '../app/stores';
+  import { getCard, updateCard, deleteCard, getCards, cardComment, fetchCreateTags } from '../hooks/cards';
+  import { cardState, fetchCreateTagState, fetchStatus } from '../app/stores';
   import { createEventDispatcher } from 'svelte';
+  import TagInput from './TagInput.svelte';
 
   export let cardId: string;
   const dispatch = createEventDispatcher();
@@ -11,6 +12,7 @@
   let title = '';
   let body = '';
   let status = '';
+  let tags: string[] = [];
   let commentDraft = '';
 
   onMount(async () => {
@@ -21,14 +23,42 @@
     title = $cardState.data.title;
     body = $cardState.data.body;
     status = $cardState.data.status;
+    tags = $cardState.data?.expand?.tags ?? [];
   }
 
   async function handleSave() {
-    await updateCard(cardId, { title, body, status });
-    editing = false;
-    await getCard(cardId);
-    getCards('');
-    dispatch('updated');
+
+    if (tags.length) await fetchCreateTags('', tags.map(tag => { return typeof tag === 'object' ? tag.name : tag}))
+    if ($fetchCreateTagState.status === fetchStatus.success) {
+      const desiredTags = $fetchCreateTagState.data
+
+      let addedTags
+      let removedTags
+      // const tagsExist = !!$cardState?.data?.expand?.tags
+      // if (tagsExist) {
+      //   const tagsThatAreAlreadyOnTheCard = $cardState.data.expand.tags
+      //   addedTags = desiredTags.filter((tag: any) => {
+      //     return !tagsThatAreAlreadyOnTheCard.includes(tag.id)
+      //   })
+      //   removedTags = tagsThatAreAlreadyOnTheCard.filter((tag: any) => {
+      //     return desiredTags.map(record => record.name).includes(tag.id)
+      //   })
+      // } else {
+      //   addedTags = tagRecords
+      // }
+      await updateCard(cardId, {
+        ...(title !== $cardState.data.title && { title }),
+        ...(body !== $cardState.data.body && { body }),
+        ...(status !== $cardState.data.status && { status }),
+        ...(addedTags && addedTags.length > 0 && { 'tags+': addedTags.map(r => r.id) }),
+        ...(removedTags && removedTags.length > 0 && { 'tags-': removedTags.map(r => r.id) }),
+        tags: desiredTags.map(record => record.id)
+      });
+      editing = false;
+      await getCard(cardId);
+      getCards('');
+      dispatch('updated');
+    }
   }
 
   async function handleCommentSubmit() {
@@ -69,6 +99,10 @@
           <label class="block text-sm font-semibold mb-1">Body:</label>
           <textarea bind:value={body} rows="5" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-300 bg-white/80"></textarea>
         </div>
+        <div class="mb-4">
+          <label class="block text-sm font-semibold mb-1">Tags:</label>
+          <TagInput bind:tags />
+        </div>
         <div class="flex gap-3 mt-8 border-t border-gray-100 pt-6">
           <button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-primary-600 to-secondary-500 text-white font-semibold shadow hover:scale-105 hover:shadow-2xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-400" on:click={handleSave}>
             <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 13l4 4L19 7' /></svg>
@@ -88,6 +122,13 @@
         </div>
         <div class="mb-2 border-b border-gray-100 pb-2"><span class="text-xs text-gray-400">Card Details</span></div>
         <div class="mb-4 whitespace-pre-line text-gray-700 text-base leading-relaxed">{body}</div>
+        <div class="mb-4">
+          <div class="flex flex-wrap gap-2">
+            {#each tags as tag}
+              <span class="px-2 py-1 rounded-full bg-primary-100 text-primary-700 text-xs font-semibold border border-primary-200 shadow-sm cursor-default">{tag.name}</span>
+            {/each}
+          </div>
+        </div>
         <div class="flex gap-3 mt-8 border-t border-gray-100 pt-6">
           <button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-secondary-600 to-primary-500 text-white font-semibold shadow hover:scale-105 hover:shadow-2xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-secondary-400" on:click={() => editing = true}>
             <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15.232 5.232l3.536 3.536M9 11l6 6M3 21h6v-6l9-9a2.828 2.828 0 10-4-4l-9 9z' /></svg>
