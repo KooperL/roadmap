@@ -1,14 +1,16 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import { onDestroy } from 'svelte';
-	import { createCardState } from '$lib/app/stores';
-	import { createCard } from '$lib/hooks/cards';
+	import { createCardState, fetchCreateTagState, fetchStatus } from '$lib/app/stores';
+	import { createCard, fetchCreateTags, getCards } from '$lib/hooks/cards';
+  import TagInput from './TagInput.svelte';
 
   const dispatch = createEventDispatcher();
 
   let title = '';
   let body = '';
   let status = '';
+  let tags: string[] = [];
 
   let unsubscribe: () => void;
 
@@ -24,7 +26,12 @@
   });
 
   async function submit() {
-    await createCard({ title, body, status });
+    await fetchCreateTags('', tags)
+    if ($fetchCreateTagState.status === fetchStatus.success) {
+      const tagRecords = $fetchCreateTagState.data
+      await createCard({ title, body, status, tags: tagRecords.map(record => record.id) });
+    }
+    await getCards('')
   }
 
   function close() {
@@ -51,6 +58,10 @@
     <div class="mb-4">
       <label class="block text-sm font-semibold mb-1" for="status">Status</label>
       <input id="status" type="text" bind:value={status} required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white/80 text-base" />
+    </div>
+    <div class="mb-4">
+      <label class="block text-sm font-semibold mb-1" for="tags">Tags</label>
+      <TagInput bind:tags />
     </div>
     <div class="flex gap-3 mt-8 border-t border-gray-100 pt-6 justify-end">
       <button type="submit" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-primary-600 to-secondary-500 text-white font-semibold shadow hover:scale-105 hover:shadow-2xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-400">
