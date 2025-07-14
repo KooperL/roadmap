@@ -11,6 +11,7 @@ export const getCards = async (projectId: string) => {
 			data: undefined
 		}));
 		const fetchCardsResult = await pb.collection('card').getList(1, 50, {
+			expand: 'category',
 			// filter: 'project = "projectId"'
 		});
 		cardsState.update((state) => ({
@@ -38,7 +39,7 @@ export const getCard = async (cardId: string) => {
 			data: undefined
 		}));
 		const fetchCardResult = await pb.collection('card').getOne(cardId, {
-			expand: ['comment_via_card', 'tags'].join(','),
+			expand: ['comment_via_card', 'tags', 'category'].join(','),
 		});
 		cardState.update((state) => ({
 			errorMessage: undefined,
@@ -64,10 +65,13 @@ export const fetchCreateTags = async (projectId: string, tags: string[]) => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const initialFetch = await pb.collection('tags').getFullList({
-			filter: tags.map((tag) => `name="${tag}"`).join('||')
-			// filter: 'project = "projectId"'
-    });
+    let initialFetch = []
+    if (!tags.length) {
+		  initialFetch = await pb.collection('tags').getFullList({
+		  	filter: tags.map((tag) => `name="${tag}"`).join('||')
+		  	// filter: 'project = "projectId"'
+      });
+    }
     const initialFetchTags = initialFetch.map(record => record.name)
     const missingTags = tags.filter(tagString => {
       return !initialFetchTags.includes(tagString)
@@ -109,7 +113,8 @@ export const createCard = async (details: any) => {
       title: details.title,
 			body: details.body,
 			status: details.status,
-      tags: details.tags
+      tags: details.tags,
+      category: details.category
     });
 		createCardState.update((state) => ({
 			errorMessage: undefined,
@@ -140,9 +145,8 @@ export const updateCard = async (id: string, details: any) => {
 			title: details.title,
       body: details.body,
 			status: details.status,
-      'tags-': details['tags-'],
-      'tags+': details['tags+'],
-      tags: details.tags
+      tags: details.tags,
+      category: details.category
     });
 		updateCardState.update((state) => ({
 			errorMessage: undefined,

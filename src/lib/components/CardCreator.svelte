@@ -4,13 +4,15 @@
 	import { createCardState, fetchCreateTagState, fetchStatus } from '$lib/app/stores';
 	import { createCard, fetchCreateTags, getCards } from '$lib/hooks/cards';
   import TagInput from './TagInput.svelte';
+  import CategorySelector from './CategorySelector.svelte';
 
   const dispatch = createEventDispatcher();
 
   let title = '';
   let body = '';
   let status = '';
-  let tags: string[] = [];
+  let tags: (string | { name: string; id?: string })[] = [];
+  let selectedCategory: string | null = null;
 
   let unsubscribe: () => void;
 
@@ -26,10 +28,18 @@
   });
 
   async function submit() {
-    await fetchCreateTags('', tags)
+    tags.length > 0 && await fetchCreateTags('', tags.map(tag => typeof tag === 'object' ? tag.name : tag))
     if ($fetchCreateTagState.status === fetchStatus.success) {
       const tagRecords = $fetchCreateTagState.data
-      await createCard({ title, body, status, tags: tagRecords.map(record => record.id) });
+      await createCard({
+        title,
+        body,
+        status,
+        tags: tagRecords.map((record: any) => record.id),
+        ...(tagRecords && tagRecords.length > 0 && { tags: tagRecords.map((record: any) => record.id), }),
+
+        category: selectedCategory
+      });
     }
     await getCards('')
   }
@@ -62,6 +72,10 @@
     <div class="mb-4">
       <label class="block text-sm font-semibold mb-1" for="tags">Tags</label>
       <TagInput bind:tags />
+    </div>
+    <div class="mb-4">
+      <label class="block text-sm font-semibold mb-1" for="category">Category</label>
+      <CategorySelector bind:selectedCategory />
     </div>
     <div class="flex gap-3 mt-8 border-t border-gray-100 pt-6 justify-end">
       <button type="submit" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-primary-600 to-secondary-500 text-white font-semibold shadow hover:scale-105 hover:shadow-2xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-400">

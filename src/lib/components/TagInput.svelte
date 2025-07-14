@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from 'svelte';
-  export let tags: string[] = [];
+  export let tags: (string | { name: string; id?: string })[] = [];
   const dispatch = createEventDispatcher();
   let inputValue = '';
   let inputRef: HTMLInputElement;
@@ -39,7 +39,7 @@
 <div class="flex flex-wrap gap-2 items-center border border-gray-300 rounded-lg px-2 py-1 bg-white/80 focus-within:ring-2 focus-within:ring-primary-300">
   {#each tags as tag, idx}
     <span class="flex items-center gap-1 px-2 py-1 rounded-full bg-primary-100 text-primary-700 text-xs font-semibold cursor-pointer hover:bg-primary-200 transition" on:click={() => removeTag(idx)}>
-      {tag?.name ?? tag}
+      {typeof tag === 'object' ? tag.name : tag}
       <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
     </span>
   {/each}

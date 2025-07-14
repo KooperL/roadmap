@@ -58,7 +58,14 @@
     <strong class="block text-lg text-primary-800 group-hover:text-primary-900 transition-colors">{card.title}</strong>
   </div>
   <div class="text-gray-700 text-sm line-clamp-3 mb-1">{card.body}</div>
-  <span class="absolute top-3 right-3 px-2 py-0.5 rounded-full text-xs font-semibold bg-primary-100 text-primary-700 border border-primary-200 shadow-sm">{currentStatus}</span>
+  <div class="flex items-center gap-2 absolute top-3 right-3">
+    {#if card.expand?.category}
+      <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-secondary-100 text-secondary-700 border border-secondary-200 shadow-sm">
+        {card.expand.category.name}
+      </span>
+    {/if}
+    <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-primary-100 text-primary-700 border border-primary-200 shadow-sm">{currentStatus}</span>
+  </div>
   
   <!-- Drag indicator -->
   <div class="absolute inset-0 bg-primary-50/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none flex items-center justify-center">
