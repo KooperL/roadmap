@@ -1,4 +1,4 @@
-import { cardsState, cardState, commentCreateState, createCardState, deleteCardState, fetchCreateTagState, fetchStatus, updateCardState } from "../app/stores";
+import { cardsState, cardState, commentCreateState, createCardState, deleteCardState, fetchCreateTagState, fetchStatus, projectStatusState, updateCardState } from "../app/stores";
 import { logger } from "../logger";
 import { pb } from "../pocketbase";
 
@@ -65,7 +65,7 @@ export const fetchCreateTags = async (projectId: string, tags: string[]) => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-    let initialFetch = []
+    let initialFetch: any[] = []
     if (!tags.length) {
 		  initialFetch = await pb.collection('tags').getFullList({
 		  	filter: tags.map((tag) => `name="${tag}"`).join('||')
@@ -113,6 +113,7 @@ export const createCard = async (details: any) => {
       title: details.title,
 			body: details.body,
 			status: details.status,
+      priority: details.priority,
       tags: details.tags,
       category: details.category
     });
@@ -145,6 +146,7 @@ export const updateCard = async (id: string, details: any) => {
 			title: details.title,
       body: details.body,
 			status: details.status,
+      priority: details.priority,
       tags: details.tags,
       category: details.category
     });
@@ -210,6 +212,44 @@ export const cardComment = async (cardId: string, comment: string) => {
 	} catch (e: any) {
 		logger.error('cardComment hook', e.message);
 		commentCreateState.update((state) => ({
+			status: fetchStatus.error,
+			data: undefined,
+			errorMessage: e.message
+		}));
+	}
+}
+
+
+export const getProjectStatus = async (projectId: string) => {
+	try {
+		logger.info('getProjectStatus hook', 'Hook called');
+		projectStatusState.update((state) => ({
+			status: fetchStatus.loading,
+			errorMessage: undefined,
+			data: undefined
+		}));
+		projectStatusState.update((state) => ({
+			errorMessage: undefined,
+			status: fetchStatus.success,
+			data: [
+        {
+          name: 'TODO',
+          position: 0
+        },
+        {
+          name: 'In progress',
+          position: 1
+        },
+        {
+          name: 'Done',
+          position: 3
+        },
+      ]
+		}));
+		logger.debug('getProjectStatus hook', 'Tenants fetched');
+	} catch (e: any) {
+		logger.error('getProjectStatus hook', e.message);
+		projectStatusState.update((state) => ({
 			status: fetchStatus.error,
 			data: undefined,
 			errorMessage: e.message

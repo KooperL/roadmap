@@ -1,12 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { getCards } from '$lib/hooks/cards';
-  import { fetchStatus, cardsState } from '$lib/app/stores';
+  import { getCards, getProjectStatus } from '$lib/hooks/cards';
+  import { fetchStatus, cardsState, projectStatusState } from '$lib/app/stores';
   import CardEditor from '$lib/components/CardCreator.svelte';
   import CardView from '$lib/components/CardView.svelte';
   import LandCard from '$lib/components/LandCard.svelte';
 
-  const STATUSES = ['TODO', 'IN ACTION', 'DONE'];
+  // Statuses will be loaded from projectStatusState
   let showEditor = false;
   let showCardView = false;
   let selectedCardId: string | null = null;
@@ -22,6 +22,9 @@
   onMount(async () => {
     if ($cardsState.status !== fetchStatus.success) {
         await getCards('');
+    }
+    if ($projectStatusState.status !== fetchStatus.success) {
+        await getProjectStatus('');
     }
   });
 
@@ -83,6 +86,8 @@
   function handleCardOpen(event: CustomEvent) {
     openCard(event.detail.cardId);
   }
+
+  $: sortedStatuses = $projectStatusState.data ? $projectStatusState.data.sort((a: any, b: any) => a.position - b.position) : [];
 </script>
 
 <div class="min-h-screen w-full bg-gradient-to-br from-secondary-50 via-white to-primary-100 flex flex-col items-center py-12 px-2">
@@ -113,23 +118,28 @@
     <p class="text-red-600 text-lg mt-8">Error pulling the cards: {$cardsState.errorMessage}</p>
   {:else}
     <div class="w-full max-w-7xl flex flex-col md:flex-row gap-8 mt-8">
-      {#each STATUSES as status}
+      {#if $projectStatusState.status === fetchStatus.loading}
+        <p class="text-gray-500 text-lg animate-pulse">Loading statuses...</p>
+      {:else if $projectStatusState.status === fetchStatus.error}
+        <p class="text-red-600 text-lg">Error loading statuses: {$projectStatusState.errorMessage}</p>
+      {:else if $projectStatusState.data}
+        {#each sortedStatuses as status}
         <div 
-          class="flex-1 bg-white/70 backdrop-blur-md border border-gray-200 rounded-3xl p-6 shadow-2xl min-h-[340px] flex flex-col transition-all duration-200 {hoveredStatus === status && isDragging ? 'bg-primary-50/30 border-primary-300 shadow-primary-200/50' : ''}"
-          on:dragover={(e) => handleDragOver(e, status)}
-          on:dragleave={(e) => handleDragLeave(e, status)}
-          on:drop={(e) => handleDrop(e, status)}
+          class="flex-1 bg-white/70 backdrop-blur-md border border-gray-200 rounded-3xl p-6 shadow-2xl min-h-[340px] flex flex-col transition-all duration-200 {hoveredStatus === status.name && isDragging ? 'bg-primary-50/30 border-primary-300 shadow-primary-200/50' : ''}"
+          on:dragover={(e) => handleDragOver(e, status.name)}
+          on:dragleave={(e) => handleDragLeave(e, status.name)}
+          on:drop={(e) => handleDrop(e, status.name)}
         >
           <div class="flex items-center gap-2 mb-6">
             <span class="inline-block w-3 h-3 rounded-full bg-primary-400 animate-pulse"></span>
-            <h2 class="text-2xl font-bold text-primary-700 tracking-wide">{status}</h2>
-            <span class="ml-auto px-3 py-1 rounded-full text-xs font-semibold bg-secondary-100 text-secondary-700 border border-secondary-200">{getCardsByStatus(status).length} cards</span>
+            <h2 class="text-2xl font-bold text-primary-700 tracking-wide">{status.name}</h2>
+            <span class="ml-auto px-3 py-1 rounded-full text-xs font-semibold bg-secondary-100 text-secondary-700 border border-secondary-200">{getCardsByStatus(status.name).length} cards</span>
           </div>
           <div class="flex flex-col gap-4 flex-1">
-            {#each getCardsByStatus(status) as card (card.id)}
+            {#each getCardsByStatus(status.name) as card (card.id)}
               <LandCard 
                 {card} 
-                currentStatus={status} 
+                currentStatus={status.name} 
                 on:open={handleCardOpen}
                 on:dragstart={handleDragStart}
                 on:dragend={handleDragEnd}
@@ -139,7 +149,8 @@
             {/each}
           </div>
         </div>
-      {/each}
+        {/each}
+      {/if}
     </div>
   {/if}
 </div>

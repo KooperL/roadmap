@@ -24,6 +24,8 @@ export interface WritableState<T> {
 	errorMessage?: string;
 }
 
+// ========================================================================
+
 export const metadata = writable<Metadata>({});
 export const toast = writable<Toast>({});
 
@@ -76,7 +78,13 @@ export const fetchCreateTagState = writable<WritableState<any>>({
 	errorMessage: undefined
 });
 
-export const categoryStore = writable<WritableState<any>>({
+export const cardCategoryState = writable<WritableState<any>>({
+	status: fetchStatus.idle,
+	data: undefined,
+	errorMessage: undefined
+});
+
+export const projectStatusState = writable<WritableState<any>>({
 	status: fetchStatus.idle,
 	data: undefined,
 	errorMessage: undefined
