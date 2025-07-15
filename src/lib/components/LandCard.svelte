@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import { updateCard } from '../hooks/cards';
+  import { cardPriority } from '../config';
 
   export let card: any;
   export let currentStatus: string;
@@ -42,6 +43,27 @@
       dispatch('open', { cardId: card.id });
     }
   }
+
+  function getPriorityName(priorityValue: number): string {
+    const entries = Object.entries(cardPriority);
+    const entry = entries.find(([key, value]) => value === priorityValue);
+    return entry ? entry[0] : 'MEDIUM';
+  }
+
+  function getPriorityColor(priorityValue: number): string {
+    switch (priorityValue) {
+      case cardPriority.CRITICAL:
+        return 'text-red-700 bg-red-100 border-red-200';
+      case cardPriority.HIGH:
+        return 'text-orange-700 bg-orange-100 border-orange-200';
+      case cardPriority.MEDIUM:
+        return 'text-yellow-700 bg-yellow-100 border-yellow-200';
+      case cardPriority.LOW:
+        return 'text-green-700 bg-green-100 border-green-200';
+      default:
+        return 'text-gray-700 bg-gray-100 border-gray-200';
+    }
+  }
 </script>
 
 <div
@@ -59,6 +81,11 @@
   </div>
   <div class="text-gray-700 text-sm line-clamp-3 mb-1">{card.body}</div>
   <div class="flex items-center gap-2 absolute top-3 right-3">
+    {#if card.priority}
+      <span class="px-2 py-0.5 rounded-full text-xs font-semibold border shadow-sm {getPriorityColor(card.priority)}">
+        {getPriorityName(card.priority)}
+      </span>
+    {/if}
     {#if card.expand?.category}
       <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-secondary-100 text-secondary-700 border border-secondary-200 shadow-sm">
         {card.expand.category.name}

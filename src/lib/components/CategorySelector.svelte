@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher, onMount } from 'svelte';
-  import { categoryStore, fetchStatus } from '../app/stores';
+  import { cardCategoryState, fetchStatus } from '../app/stores';
   import { getCategories, createCategory } from '../hooks/categories';
 
   export let selectedCategory: string | null = null;
@@ -51,8 +51,8 @@
   }
 
   function getCategoryName(categoryId: string) {
-    if (!$categoryStore.data) return '';
-    const category = $categoryStore.data.find((cat: any) => cat.id === categoryId);
+    if (!$cardCategoryState.data) return '';
+    const category = $cardCategoryState.data.find((cat: any) => cat.id === categoryId);
     return category?.name || '';
   }
 </script>
@@ -75,12 +75,12 @@
 
   {#if showDropdown}
     <div class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
-      {#if $categoryStore.status === fetchStatus.loading}
+      {#if $cardCategoryState.status === fetchStatus.loading}
         <div class="px-3 py-2 text-gray-500 text-sm">Loading categories...</div>
-      {:else if $categoryStore.status === fetchStatus.error}
+      {:else if $cardCategoryState.status === fetchStatus.error}
         <div class="px-3 py-2 text-red-500 text-sm">Error loading categories</div>
-      {:else if $categoryStore.data && $categoryStore.data.length > 0}
-        {#each $categoryStore.data as category}
+      {:else if $cardCategoryState.data && $cardCategoryState.data.length > 0}
+        {#each $cardCategoryState.data as category}
           <button
             type="button"
             class="w-full px-3 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none {selectedCategory === category.id ? 'bg-primary-50 text-primary-700' : 'text-gray-900'}"

@@ -5,12 +5,15 @@
 	import { createCard, fetchCreateTags, getCards } from '$lib/hooks/cards';
   import TagInput from './TagInput.svelte';
   import CategorySelector from './CategorySelector.svelte';
+  import StatusSelector from './StatusSelector.svelte';
+  import PrioritySelector from './PrioritySelector.svelte';
 
   const dispatch = createEventDispatcher();
 
   let title = '';
   let body = '';
   let status = '';
+  let priority = 5; // Default to MEDIUM
   let tags: (string | { name: string; id?: string })[] = [];
   let selectedCategory: string | null = null;
 
@@ -29,18 +32,19 @@
 
   async function submit() {
     tags.length > 0 && await fetchCreateTags('', tags.map(tag => typeof tag === 'object' ? tag.name : tag))
+    let tagRecords = []
     if ($fetchCreateTagState.status === fetchStatus.success) {
-      const tagRecords = $fetchCreateTagState.data
-      await createCard({
-        title,
-        body,
-        status,
-        tags: tagRecords.map((record: any) => record.id),
-        ...(tagRecords && tagRecords.length > 0 && { tags: tagRecords.map((record: any) => record.id), }),
-
-        category: selectedCategory
-      });
+      tagRecords= $fetchCreateTagState.data
     }
+    await createCard({
+      title,
+      body,
+      status,
+      priority,
+      ...(tagRecords && tagRecords.length > 0 && { tags: tagRecords.map((record: any) => record.id), }),
+
+      category: selectedCategory
+    });
     await getCards('')
   }
 
@@ -67,7 +71,11 @@
     </div>
     <div class="mb-4">
       <label class="block text-sm font-semibold mb-1" for="status">Status</label>
-      <input id="status" type="text" bind:value={status} required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white/80 text-base" />
+      <StatusSelector bind:selectedStatus={status} />
+    </div>
+    <div class="mb-4">
+      <label class="block text-sm font-semibold mb-1" for="priority">Priority</label>
+      <PrioritySelector bind:selectedPriority={priority} />
     </div>
     <div class="mb-4">
       <label class="block text-sm font-semibold mb-1" for="tags">Tags</label>

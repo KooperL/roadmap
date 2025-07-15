@@ -5,6 +5,9 @@
   import { createEventDispatcher } from 'svelte';
   import TagInput from './TagInput.svelte';
   import CategorySelector from './CategorySelector.svelte';
+  import StatusSelector from './StatusSelector.svelte';
+  import PrioritySelector from './PrioritySelector.svelte';
+  import { cardPriority } from '../config';
 
   export let cardId: string;
   const dispatch = createEventDispatcher();
@@ -13,6 +16,7 @@
   let title = '';
   let body = '';
   let status = '';
+  let priority = 5; // Default to MEDIUM
   let tags: (string | { name: string; id?: string })[] = [];
   let selectedCategory: string | null = null;
   let commentDraft = '';
@@ -25,6 +29,7 @@
     title = $cardState.data.title;
     body = $cardState.data.body;
     status = $cardState.data.status;
+    priority = $cardState.data.priority || 5;
     tags = $cardState.data?.expand?.tags ?? [];
     selectedCategory = $cardState.data.category || null;
   }
@@ -40,6 +45,7 @@
       ...(title !== $cardState.data.title && { title }),
       ...(body !== $cardState.data.body && { body }),
       ...(status !== $cardState.data.status && { status }),
+      ...(priority !== $cardState.data.priority && { priority }),
       tags: desiredTags.map((record: any) => record.id),
       ...(selectedCategory !== $cardState.data.category && { category: selectedCategory })
     });
@@ -63,6 +69,27 @@
   function close() {
     dispatch('close');
   }
+
+  function getPriorityName(priorityValue: number): string {
+    const entries = Object.entries(cardPriority);
+    const entry = entries.find(([key, value]) => value === priorityValue);
+    return entry ? entry[0] : 'MEDIUM';
+  }
+
+  function getPriorityColor(priorityValue: number): string {
+    switch (priorityValue) {
+      case cardPriority.CRITICAL:
+        return 'text-red-700 bg-red-100 border-red-200';
+      case cardPriority.HIGH:
+        return 'text-orange-700 bg-orange-100 border-orange-200';
+      case cardPriority.MEDIUM:
+        return 'text-yellow-700 bg-yellow-100 border-yellow-200';
+      case cardPriority.LOW:
+        return 'text-green-700 bg-green-100 border-green-200';
+      default:
+        return 'text-gray-700 bg-gray-100 border-gray-200';
+    }
+  }
 </script>
 
 <div class="fixed inset-0 z-[1000] flex items-center justify-center bg-gradient-to-br from-primary-100/60 via-white/70 to-secondary-100/60 backdrop-blur-[6px] transition-all duration-300" on:click|self={close}>
@@ -81,7 +108,11 @@
         </div>
         <div class="mb-4">
           <label class="block text-sm font-semibold mb-1">Status:</label>
-          <input type="text" bind:value={status} class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-300 bg-white/80" />
+          <StatusSelector bind:selectedStatus={status} />
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-semibold mb-1">Priority:</label>
+          <PrioritySelector bind:selectedPriority={priority} />
         </div>
         <div class="mb-4">
           <label class="block text-sm font-semibold mb-1">Body:</label>
@@ -110,7 +141,14 @@
             {title?.charAt(0) ?? '?'}
           </div>
           <h2 class="text-2xl font-bold text-primary-800 flex-1">{title}</h2>
-          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-primary-100 text-primary-700 border border-primary-200 shadow-sm">{status}</span>
+          <div class="flex items-center gap-2">
+            {#if $cardState.data.priority}
+              <span class="px-3 py-1 rounded-full text-xs font-semibold border shadow-sm {getPriorityColor($cardState.data.priority)}">
+                {getPriorityName($cardState.data.priority)}
+              </span>
+            {/if}
+            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-primary-100 text-primary-700 border border-primary-200 shadow-sm">{status}</span>
+          </div>
         </div>
         <div class="mb-2 border-b border-gray-100 pb-2"><span class="text-xs text-gray-400">Card Details</span></div>
         <div class="mb-4 whitespace-pre-line text-gray-700 text-base leading-relaxed">{body}</div>
