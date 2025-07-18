@@ -30,6 +30,15 @@ export const getCards = async (projectId: string) => {
 	}
 }
 
+export const resetGetCards = () => {
+	logger.info('resetGetCards hook', 'Hook called');
+	cardsState.update((state) => ({
+		status: fetchStatus.idle,
+		errorMessage: undefined,
+		data: undefined
+	}));
+}
+
 export const getCard = async (cardId: string) => {
 	try {
 		logger.info('getCard hook', 'Hook called');
@@ -55,6 +64,15 @@ export const getCard = async (cardId: string) => {
 			errorMessage: e.message
 		}));
 	}
+}
+
+export const resetGetCard = () => {
+	logger.info('resetGetCard hook', 'Hook called');
+	cardState.update((state) => ({
+		status: fetchStatus.idle,
+		errorMessage: undefined,
+		data: undefined
+	}));
 }
 
 export const fetchCreateTags = async (projectId: string, tags: string[]) => {
@@ -101,6 +119,15 @@ export const fetchCreateTags = async (projectId: string, tags: string[]) => {
 	}
 }
 
+export const resetFetchCreateTags = () => {
+	logger.info('resetFetchCreateTags hook', 'Hook called');
+	fetchCreateTagState.update((state) => ({
+		status: fetchStatus.idle,
+		errorMessage: undefined,
+		data: undefined
+	}));
+}
+
 export const createCard = async (details: any) => {
 	try {
 		logger.info('createCard hook', 'Hook called');
@@ -133,6 +160,14 @@ export const createCard = async (details: any) => {
 	}
 }
 
+export const resetCreateCard = () => {
+	logger.info('resetCreateCard hook', 'Hook called');
+	createCardState.update((state) => ({
+		status: fetchStatus.idle,
+		errorMessage: undefined,
+		data: undefined
+	}));
+}
 
 export const updateCard = async (id: string, details: any) => {
 	try {
@@ -166,6 +201,15 @@ export const updateCard = async (id: string, details: any) => {
 	}
 }
 
+export const resetUpdateCard = () => {
+	logger.info('resetUpdateCard hook', 'Hook called');
+	updateCardState.update((state) => ({
+		status: fetchStatus.idle,
+		errorMessage: undefined,
+		data: undefined
+	}));
+}
+
 export const deleteCard = async (id: string) => {
 	try {
 		logger.info('deleteCard hook', 'Hook called');
@@ -189,6 +233,15 @@ export const deleteCard = async (id: string) => {
 			errorMessage: e.message
 		}));
 	}
+}
+
+export const resetDeleteCard = () => {
+	logger.info('resetDeleteCard hook', 'Hook called');
+	deleteCardState.update((state) => ({
+		status: fetchStatus.idle,
+		errorMessage: undefined,
+		data: undefined
+	}));
 }
 
 export const cardComment = async (cardId: string, comment: string) => {
@@ -219,6 +272,14 @@ export const cardComment = async (cardId: string, comment: string) => {
 	}
 }
 
+export const resetCardComment = () => {
+	logger.info('resetCardComment hook', 'Hook called');
+	commentCreateState.update((state) => ({
+		status: fetchStatus.idle,
+		errorMessage: undefined,
+		data: undefined
+	}));
+}
 
 export const getProjectStatus = async (projectId: string) => {
 	try {
@@ -255,4 +316,13 @@ export const getProjectStatus = async (projectId: string) => {
 			errorMessage: e.message
 		}));
 	}
+}
+
+export const resetGetProjectStatus = () => {
+	logger.info('resetGetProjectStatus hook', 'Hook called');
+	projectStatusState.update((state) => ({
+		status: fetchStatus.idle,
+		errorMessage: undefined,
+		data: undefined
+	}));
 }

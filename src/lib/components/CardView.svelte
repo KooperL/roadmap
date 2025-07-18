@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { getCard, updateCard, deleteCard, getCards, cardComment, fetchCreateTags } from '../hooks/cards';
+  import { getCard, updateCard, deleteCard, getCards, cardComment, fetchCreateTags, resetGetCards } from '../hooks/cards';
   import { cardState, fetchCreateTagState, fetchStatus } from '../app/stores';
   import { createEventDispatcher } from 'svelte';
   import TagInput from './TagInput.svelte';
@@ -9,21 +9,27 @@
   import PrioritySelector from './PrioritySelector.svelte';
   import { cardPriority } from '../config';
 
-  export let cardId: string;
+  let cardId: string;
   const dispatch = createEventDispatcher();
 
   let editing = false;
   let title = '';
   let body = '';
   let status = '';
-  let priority = 5; // Default to MEDIUM
+  let priority = cardPriority.MEDIUM; // Default to MEDIUM
   let tags: (string | { name: string; id?: string })[] = [];
   let selectedCategory: string | null = null;
   let commentDraft = '';
 
   onMount(async () => {
-    await getCard(cardId);
+    if ($cardState.status === fetchStatus.success) {
+      cardId = $cardState!.data!.id
+    }
+    // await getCard(cardId);
   });
+
+  $: cardId = $cardState?.data?.id ?? ''
+
 
   $: if ($cardState.data && !editing) {
     title = $cardState.data.title;
@@ -63,6 +69,7 @@
 
   async function handleDelete() {
     await deleteCard(cardId);
+    resetGetCards();
     dispatch('deleted');
   }
 

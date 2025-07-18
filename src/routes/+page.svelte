@@ -1,15 +1,13 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { getCards, getProjectStatus } from '$lib/hooks/cards';
-  import { fetchStatus, cardsState, projectStatusState } from '$lib/app/stores';
+  import { getCard, getCards, getProjectStatus, resetGetCard } from '$lib/hooks/cards';
+  import { fetchStatus, cardsState, projectStatusState, cardState } from '$lib/app/stores';
   import CardEditor from '$lib/components/CardCreator.svelte';
   import CardView from '$lib/components/CardView.svelte';
   import LandCard from '$lib/components/LandCard.svelte';
 
   // Statuses will be loaded from projectStatusState
   let showEditor = false;
-  let showCardView = false;
-  let selectedCardId: string | null = null;
   let isDragging = false;
   let draggedCardId: string | null = null;
   let draggedFromStatus: string | null = null;
@@ -29,8 +27,7 @@
   });
 
   function openCard(cardId: string) {
-    selectedCardId = cardId;
-    showCardView = true;
+    getCard(cardId)
   }
 
   function handleDragStart(event: CustomEvent) {
@@ -109,8 +106,8 @@
   {#if showEditor}
     <CardEditor on:close={() => showEditor = false} />
   {/if}
-  {#if showCardView && selectedCardId}
-    <CardView cardId={selectedCardId} on:close={() => showCardView = false} />
+  {#if $cardState.status === fetchStatus.success || $cardState.status === fetchStatus.loading}
+    <CardView on:close={resetGetCard} />
   {/if}
   {#if $cardsState.status === fetchStatus.loading || $cardsState.status === fetchStatus.idle}
     <p class="text-gray-500 text-lg mt-8 animate-pulse">Loading cards...</p>

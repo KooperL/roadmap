@@ -2,7 +2,7 @@
   import { createEventDispatcher } from 'svelte';
   import { onDestroy } from 'svelte';
 	import { createCardState, fetchCreateTagState, fetchStatus } from '$lib/app/stores';
-	import { createCard, fetchCreateTags, getCards } from '$lib/hooks/cards';
+	import { createCard, fetchCreateTags, getCards, resetGetCards } from '$lib/hooks/cards';
   import TagInput from './TagInput.svelte';
   import CategorySelector from './CategorySelector.svelte';
   import StatusSelector from './StatusSelector.svelte';
@@ -45,7 +45,8 @@
 
       category: selectedCategory
     });
-    await getCards('')
+    resetGetCards()
+    // await getCards('')
   }
 
   function close() {

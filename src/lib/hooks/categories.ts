@@ -29,6 +29,15 @@ export const getCategories = async () => {
 	}
 }
 
+export const resetGetCategories = () => {
+	logger.info('resetGetCategories hook', 'Hook called');
+	cardCategoryState.update((state) => ({
+		status: fetchStatus.idle,
+		errorMessage: undefined,
+		data: undefined
+	}));
+}
+
 export const createCategory = async (name: string) => {
 	try {
 		logger.info('createCategory hook', 'Hook called');
@@ -56,4 +65,13 @@ export const createCategory = async (name: string) => {
 		}));
 		throw e;
 	}
-} 
+}
+
+export const resetCreateCategory = () => {
+	logger.info('resetCreateCategory hook', 'Hook called');
+	cardCategoryState.update((state) => ({
+		status: fetchStatus.idle,
+		errorMessage: undefined,
+		data: undefined
+	}));
+}
