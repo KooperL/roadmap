@@ -30,18 +30,18 @@
 </script>
 
 <Navbar>
-	<div class="">
+	<div class="flex flex-wrap gap-4">
 		<NavBrand href="/">
 			<span
-				class=""
+				class="self-center whitespace-nowrap pr-2 text-8xl text-xl font-bold font-semibold text-primary-700 dark:text-white"
 				>name</span
 			>
 		</NavBrand>
 		<NavBrand href="/">
-			<span class="">•</span>
+			<span class="hidden self-center whitespace-nowrap sm:block dark:text-white">•</span>
 		</NavBrand>
 	</div>
 </Navbar>
 
-<!--Modal bind:open={formModal} size="xs" autoclose={false} class="">
+<!--Modal bind:open={formModal} size="xs" autoclose={false} class="w-full bg-gray-100 absolute">
   </Modal -->

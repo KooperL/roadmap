@@ -8,6 +8,11 @@
   import StatusSelector from './StatusSelector.svelte';
   import PrioritySelector from './PrioritySelector.svelte';
   import { cardPriority } from '../config';
+	import TextArea from './TextArea.svelte';
+  import { Textarea, Input, Button, Heading } from 'flowbite-svelte'
+	import { ClockSolid, FloppyDiskOutline, PenOutline } from 'flowbite-svelte-icons';
+	import Chip from './Chip.svelte';
+  import moment from 'moment'
 
   let cardId: string;
   const dispatch = createEventDispatcher();
@@ -109,21 +114,15 @@
       {#if editing}
         <div class="">
           <div class="">
-            {title?.charAt(0) ?? '?'}
+            {selectedCategory}
           </div>
-          <input type="text" bind:value={title} placeholder="Title" class="" />
+          <Input type="text" bind:value={title} placeholder="Title" class="" />
         </div>
+        <StatusSelector bind:selectedStatus={status} />
+        <PrioritySelector bind:selectedPriority={priority} />
         <div class="">
-          <label class="">Status:</label>
-          <StatusSelector bind:selectedStatus={status} />
-        </div>
-        <div class="">
-          <label class="">Priority:</label>
-          <PrioritySelector bind:selectedPriority={priority} />
-        </div>
-        <div class="">
-          <label class="">Body:</label>
-          <textarea bind:value={body} rows="5" class=""></textarea>
+          <!-- <TextArea value={body} rows="5" /> -->
+          <Textarea bind:value={body} rows="5" />
         </div>
         <div class="">
           <label class="">Tags:</label>
@@ -133,32 +132,35 @@
           <label class="">Category:</label>
           <CategorySelector bind:selectedCategory />
         </div> -->
-        <div class="">
-          <button class="" on:click={handleSave}>
-            <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 13l4 4L19 7' /></svg>
+        <div class="flex justify-between align-middle">
+          <div>
+          <Button on:click={handleSave} color="green">
+            <FloppyDiskOutline class="me-2 h-4 w-4" />
             Save
-          </button>
-          <button class="" on:click={() => editing = false}>Cancel</button>
-          <button class="" on:click={handleDelete}>Delete</button>
-          <button class="" on:click={close}>Close</button>
+          </Button>
+          </div>
+          <div>
+          <Button on:click={() => editing = false}>Cancel</Button>
+          <Button on:click={handleDelete} color="red">Delete</Button>
+        </div>
         </div>
       {:else}
         <div class="">
-          <div class="">
-            {title?.charAt(0) ?? '?'}
-          </div>
-          <h2 class="">{title}</h2>
-          <div class="">
-            {#if $cardState.data.priority}
-              <span class="px-3 py-1 rounded-full text-xs font-semibold border shadow-sm {getPriorityColor($cardState.data.priority)}">
-                {getPriorityName($cardState.data.priority)}
-              </span>
-            {/if}
-            <span class="">{status}</span>
+        <div class="flex justify-between">
+            {selectedCategory}
+            <Chip border>
+              <ClockSolid class="text-primary-800 dark:text-primary-400 me-1.5 h-2.5 w-2.5" />
+                    {moment($cardState.data.created).fromNow()}
+            </Chip>
+            {getPriorityName(priority)}
+        </div>
+        <div class="flex justify-between">
+            <Heading tag="h2" class="text-4xl font-extrabold ">{title}</Heading>
+            <StatusSelector bind:selectedStatus={status} />
           </div>
         </div>
         <div class=""><span class="">Card Details</span></div>
-        <div class="">{body}</div>
+        <Textarea disabled bind:value={body} />
         <div class="">
           <div class="">
             {#each tags as tag}
@@ -176,28 +178,27 @@
             </div>
           </div>
         {/if}
-        <div class="">
-          <button class="" on:click={() => editing = true}>
-            <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15.232 5.232l3.536 3.536M9 11l6 6M3 21h6v-6l9-9a2.828 2.828 0 10-4-4l-9 9z' /></svg>
+        <div class="flex justify-between align-middle">
+          <Button class="" on:click={() => editing = true}>
+            <PenOutline class="me-2 h-4 w-4"/>
             Edit
-          </button>
-          <button class="" on:click={handleDelete}>Delete</button>
-          <button class="" on:click={close}>Close</button>
+          </Button>
+          <Button class="" on:click={close}>Close</Button>
         </div>
         <h3 class="">Comments</h3>
-        <div class="">
-          <input
+        <div class="flex gap-2">
+          <Input
             placeholder="Is there anything you'd like to add?"
             bind:value={commentDraft}
             class=""
           />
-          <button
+          <Button
             class=""
             on:click={handleCommentSubmit}
             disabled={!commentDraft.trim()}
           >
             Post
-          </button>
+          </Button>
         </div>
         <div class="">
           {#if $cardState.data?.expand?.comment_via_card?.length}
