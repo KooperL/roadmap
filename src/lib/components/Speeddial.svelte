@@ -62,7 +62,7 @@
 	};
 </script>
 
-<SpeedDial bind:open={speedDialOpen} defaultClass="fixed end-24 bottom-6" tooltip="none">
+<SpeedDial bind:open={speedDialOpen} defaultclass="" tooltip="none">
 	<SpeedDialButton
 		on:click={() => {
 			speedDialOpen = false;
@@ -71,20 +71,20 @@
 		}}
 		name="Bug"
 	>
-		<BugOutline class="h-6 w-6" />
+		<BugOutline class="" />
 	</SpeedDialButton>
 </SpeedDial>
 
-<Modal bind:open={modalOpen} size="xs" autoclose={false} class="w-full">
-	<form class="flex flex-col space-y-6" action="#" on:submit={submitModalContent}>
-		<h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+<Modal bind:open={modalOpen} size="xs" autoclose={false} class="">
+	<form class="" action="#" on:submit={submitModalContent}>
+		<h3 class="">
 			{#if type === 'bug'}
 				Found a bug?
 			{:else if type === 'feature'}
 				Have an idea?
 			{/if}
 		</h3>
-		<Label class="space-y-2">
+		<Label class="">
 			{#if type === 'bug'}
 				<span>Describe your issue</span>
 			{:else if type === 'feature'}
@@ -98,6 +98,6 @@
 				required
 			/>
 		</Label>
-		<Button type="submit" class="w-full1">Submit</Button>
+		<Button type="submit" class="">Submit</Button>
 	</form>
 </Modal>

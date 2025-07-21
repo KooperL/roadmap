@@ -56,42 +56,42 @@
 
 <div class="fixed inset-0 z-[1000] flex items-center justify-center bg-gradient-to-br from-primary-100/60 via-white/70 to-secondary-100/60 backdrop-blur-[6px] transition-all duration-300 animate-fade-in" on:click|self={close}>
   <form class="relative bg-white/80 border border-gray-200 shadow-2xl rounded-3xl p-8 min-w-[320px] max-w-[95vw] w-full sm:w-[420px] flex flex-col gap-2 overflow-auto animate-fade-in" on:submit|preventDefault={submit}>
-    <div class="flex items-center gap-3 mb-6">
-      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-200 to-secondary-200 flex items-center justify-center text-primary-700 font-bold text-2xl shadow-inner">
+    <div class="">
+      <div class="">
         {title?.charAt(0) || '+'}
       </div>
-      <h2 class="text-2xl font-bold text-primary-800 flex-1">Create New Card</h2>
+      <h2 class="">Create New Card</h2>
     </div>
-    <div class="mb-4">
-      <label class="block text-sm font-semibold mb-1" for="title">Title</label>
+    <div class="">
+      <label class="" for="title">Title</label>
       <input id="title" type="text" bind:value={title} required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white/80 text-lg font-medium" />
     </div>
-    <div class="mb-4">
-      <label class="block text-sm font-semibold mb-1" for="body">Body</label>
+    <div class="">
+      <label class="" for="body">Body</label>
       <textarea id="body" bind:value={body} required rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white/80 text-base"></textarea>
     </div>
-    <div class="mb-4">
-      <label class="block text-sm font-semibold mb-1" for="status">Status</label>
+    <div class="">
+      <label class="" for="status">Status</label>
       <StatusSelector bind:selectedStatus={status} />
     </div>
-    <div class="mb-4">
-      <label class="block text-sm font-semibold mb-1" for="priority">Priority</label>
+    <div class="">
+      <label class="" for="priority">Priority</label>
       <PrioritySelector bind:selectedPriority={priority} />
     </div>
-    <div class="mb-4">
-      <label class="block text-sm font-semibold mb-1" for="tags">Tags</label>
+    <div class="">
+      <label class="" for="tags">Tags</label>
       <TagInput bind:tags />
     </div>
-    <div class="mb-4">
-      <label class="block text-sm font-semibold mb-1" for="category">Category</label>
+    <div class="">
+      <label class="" for="category">Category</label>
       <CategorySelector bind:selectedCategory />
     </div>
-    <div class="flex gap-3 mt-8 border-t border-gray-100 pt-6 justify-end">
-      <button type="submit" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-primary-600 to-secondary-500 text-white font-semibold shadow hover:scale-105 hover:shadow-2xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-400">
+    <div class="">
+      <button type="submit" class="">
         <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 4v16m8-8H4' /></svg>
         Create
       </button>
-      <button type="button" class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 font-semibold shadow hover:bg-gray-200 transition-colors focus:outline-none" on:click={close}>Cancel</button>
+      <button type="button" class="" on:click={close}>Cancel</button>
     </div>
   </form>
 </div>
