@@ -50,18 +50,18 @@
 	<meta name="description" content={description} />
 </svelte:head>
 
-<div class="flex h-full flex-col">
+<div class="">
 	<header>
 		<Navbar />
 	</header>
-	<main class="flex grow">
-		<div class="max-h-full w-full">
+	<main class="">
+		<div class="">
 			<slot />
 		</div>
 	</main>
-	<Footer class="flex justify-center">
+	<Footer class="">
 		<FooterLinkGroup
-			ulClass="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0"
+			ulClass=""
 		>
 			<FooterLink href="/">Home</FooterLink>
 			<FooterLink href="/about">About</FooterLink>

@@ -73,29 +73,29 @@
   on:dragend={handleDragEnd}
   on:click={handleClick}
 >
-  <div class="flex items-center gap-3 mb-1">
-    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary-200 to-secondary-200 flex items-center justify-center text-primary-700 font-bold text-lg shadow-inner">
+  <div class="">
+    <div class="">
       {card.title?.charAt(0) ?? '?'}
     </div>
-    <strong class="block text-lg text-primary-800 group-hover:text-primary-900 transition-colors">{card.title}</strong>
+    <strong class="">{card.title}</strong>
   </div>
-  <div class="text-gray-700 text-sm line-clamp-3 mb-1">{card.body}</div>
-  <div class="flex items-center gap-2 absolute top-3 right-3">
+  <div class="">{card.body}</div>
+  <div class="">
     {#if card.priority}
       <span class="px-2 py-0.5 rounded-full text-xs font-semibold border shadow-sm {getPriorityColor(card.priority)}">
         {getPriorityName(card.priority)}
       </span>
     {/if}
     {#if card.expand?.category}
-      <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-secondary-100 text-secondary-700 border border-secondary-200 shadow-sm">
+      <span class="">
         {card.expand.category.name}
       </span>
     {/if}
-    <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-primary-100 text-primary-700 border border-primary-200 shadow-sm">{currentStatus}</span>
+    <span class="">{currentStatus}</span>
   </div>
   
   <!-- Drag indicator -->
-  <div class="absolute inset-0 bg-primary-50/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none flex items-center justify-center">
-    <div class="text-primary-600 text-sm font-medium">Drag to move</div>
+  <div class="">
+    <div class="">Drag to move</div>
   </div>
 </div> 

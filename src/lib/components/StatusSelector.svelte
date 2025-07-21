@@ -33,28 +33,28 @@
   }
 </script>
 
-<div class="relative">
+<div class="">
   <button
     type="button"
     bind:this={buttonRef}
     on:click={toggleDropdown}
     on:keydown={handleKeydown}
-    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white/80 text-left flex items-center justify-between"
+    class=""
   >
     <span class={selectedStatus ? 'text-gray-900' : 'text-gray-500'}>
       {selectedStatus || 'Select status...'}
     </span>
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg xmlns="http://www.w3.org/2000/svg" class="" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
     </svg>
   </button>
 
   {#if showDropdown}
-    <div class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
+    <div class="">
       {#if $projectStatusState.status === fetchStatus.loading}
-        <div class="px-3 py-2 text-gray-500 text-sm">Loading statuses...</div>
+        <div class="">Loading statuses...</div>
       {:else if $projectStatusState.status === fetchStatus.error}
-        <div class="px-3 py-2 text-red-500 text-sm">Error loading statuses</div>
+        <div class="">Error loading statuses</div>
       {:else if $projectStatusState.data && $projectStatusState.data.length > 0}
         {#each $projectStatusState.data as status}
           <button
@@ -66,7 +66,7 @@
           </button>
         {/each}
       {:else}
-        <div class="px-3 py-2 text-gray-500 text-sm">No statuses available</div>
+        <div class="">No statuses available</div>
       {/if}
     </div>
   {/if}

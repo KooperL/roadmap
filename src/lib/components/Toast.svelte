@@ -49,9 +49,9 @@
         };
     });
 </script>
-<div class="fixed bottom-2.5 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2">
+<div class="">
     {#each visibleToasts as toast (toast.id)}
-        <FlowbiteToast class="mb-4" color="none">
+        <FlowbiteToast class="" color="none">
             <svelte:component
                 this={getIcon(toast.type)}
                 slot="icon"

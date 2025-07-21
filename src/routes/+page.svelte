@@ -87,17 +87,17 @@
   $: sortedStatuses = $projectStatusState.data ? $projectStatusState.data.sort((a: any, b: any) => a.position - b.position) : [];
 </script>
 
-<div class="min-h-screen w-full bg-gradient-to-br from-secondary-50 via-white to-primary-100 flex flex-col items-center py-12 px-2">
-  <header class="mb-10 text-center">
-    <h1 class="text-4xl md:text-5xl font-extrabold text-primary-800 drop-shadow-sm tracking-tight mb-2 flex items-center justify-center gap-3">
+<div class="">
+  <header class="">
+    <h1 class="">
       <svg xmlns='http://www.w3.org/2000/svg' class='h-10 w-10 text-primary-600' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 17v-2a4 4 0 014-4h3m4 4v-2a4 4 0 00-4-4h-3m-4 4v-2a4 4 0 014-4h3m4 4v-2a4 4 0 00-4-4h-3' /></svg>
       Roadmap
     </h1>
-    <p class="text-lg text-gray-500 font-medium">Organize your workflow with clarity and style</p>
+    <p class="">Organize your workflow with clarity and style</p>
   </header>
 
   <button
-    class="mb-8 px-8 py-3 rounded-full bg-gradient-to-r from-primary-600 to-secondary-500 text-white font-bold shadow-2xl hover:scale-105 hover:shadow-2xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary-300 flex items-center gap-2"
+    class=""
     on:click={() => showEditor = true}
   >
     <svg xmlns='http://www.w3.org/2000/svg' class='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 4v16m8-8H4' /></svg>
@@ -110,15 +110,15 @@
     <CardView on:close={resetGetCard} />
   {/if}
   {#if $cardsState.status === fetchStatus.loading || $cardsState.status === fetchStatus.idle}
-    <p class="text-gray-500 text-lg mt-8 animate-pulse">Loading cards...</p>
+    <p class="">Loading cards...</p>
   {:else if $cardsState.status === fetchStatus.error}
-    <p class="text-red-600 text-lg mt-8">Error pulling the cards: {$cardsState.errorMessage}</p>
+    <p class="">Error pulling the cards: {$cardsState.errorMessage}</p>
   {:else}
-    <div class="w-full max-w-7xl flex flex-col md:flex-row gap-8 mt-8">
+    <div class="">
       {#if $projectStatusState.status === fetchStatus.loading}
-        <p class="text-gray-500 text-lg animate-pulse">Loading statuses...</p>
+        <p class="">Loading statuses...</p>
       {:else if $projectStatusState.status === fetchStatus.error}
-        <p class="text-red-600 text-lg">Error loading statuses: {$projectStatusState.errorMessage}</p>
+        <p class="">Error loading statuses: {$projectStatusState.errorMessage}</p>
       {:else if $projectStatusState.data}
         {#each sortedStatuses as status}
         <div 
@@ -127,12 +127,12 @@
           on:dragleave={(e) => handleDragLeave(e, status.name)}
           on:drop={(e) => handleDrop(e, status.name)}
         >
-          <div class="flex items-center gap-2 mb-6">
-            <span class="inline-block w-3 h-3 rounded-full bg-primary-400 animate-pulse"></span>
-            <h2 class="text-2xl font-bold text-primary-700 tracking-wide">{status.name}</h2>
-            <span class="ml-auto px-3 py-1 rounded-full text-xs font-semibold bg-secondary-100 text-secondary-700 border border-secondary-200">{getCardsByStatus(status.name).length} cards</span>
+          <div class="">
+            <span class=""></span>
+            <h2 class="">{status.name}</h2>
+            <span class="">{getCardsByStatus(status.name).length} cards</span>
           </div>
-          <div class="flex flex-col gap-4 flex-1">
+          <div class="">
             {#each getCardsByStatus(status.name) as card (card.id)}
               <LandCard 
                 {card} 
@@ -142,7 +142,7 @@
                 on:dragend={handleDragEnd}
               />
             {:else}
-              <div class="text-gray-400 italic text-center mt-8">No cards in this column yet. <span class='block text-xs mt-1'>Click "New Card" to get started!</span></div>
+              <div class="" to get started!</span></div>
             {/each}
           </div>
         </div>
