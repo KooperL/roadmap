@@ -2,7 +2,8 @@
   import { createEventDispatcher } from 'svelte';
   import { updateCard } from '../hooks/cards';
   import { cardPriority } from '../config';
-
+  import { Card } from 'flowbite-svelte'
+  
   export let card: any;
   export let currentStatus: string;
 
@@ -67,12 +68,12 @@
 </script>
 
 <div
-  class="group bg-white/90 border border-gray-100 rounded-2xl shadow hover:shadow-2xl hover:scale-[1.02] cursor-pointer transition-all duration-200 p-5 flex flex-col gap-2 relative overflow-hidden {isDragging ? 'opacity-50 scale-95' : ''}"
   draggable="true"
   on:dragstart={handleDragStart}
   on:dragend={handleDragEnd}
   on:click={handleClick}
 >
+  <Card>
   <div class="">
     <div class="">
       {card.title?.charAt(0) ?? '?'}
@@ -98,4 +99,5 @@
   <div class="">
     <div class="">Drag to move</div>
   </div>
+    </Card>
 </div> 

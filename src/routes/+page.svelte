@@ -1,10 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { getCard, getCards, getProjectStatus, resetGetCard } from '$lib/hooks/cards';
+  import { getCard, getCards, getProjectStatus, resetGetCard, updateCard } from '$lib/hooks/cards';
   import { fetchStatus, cardsState, projectStatusState, cardState } from '$lib/app/stores';
   import CardEditor from '$lib/components/CardCreator.svelte';
   import CardView from '$lib/components/CardView.svelte';
   import LandCard from '$lib/components/LandCard.svelte';
+	import { Button } from 'flowbite-svelte';
+	import { PlusOutline } from 'flowbite-svelte-icons';
 
   // Statuses will be loaded from projectStatusState
   let showEditor = false;
@@ -12,6 +14,7 @@
   let draggedCardId: string | null = null;
   let draggedFromStatus: string | null = null;
   let hoveredStatus: string | null = null;
+
 
   function getCardsByStatus(status: string): any[] {
     return $cardsState.data.filter((card: any) => card.status === status);
@@ -32,6 +35,7 @@
 
   function handleDragStart(event: CustomEvent) {
     isDragging = true;
+    console.log(event)
     draggedCardId = event.detail.cardId;
     draggedFromStatus = event.detail.status;
   }
@@ -68,7 +72,6 @@
 
     const card = $cardsState.data.find((c: any) => c.id === cardId);
     if (card && card.status !== targetStatus) {
-      const { updateCard } = await import('$lib/hooks/cards');
       await updateCard(cardId, { ...card, status: targetStatus });
       
       await getCards('');
@@ -88,21 +91,12 @@
 </script>
 
 <div class="">
-  <header class="">
-    <h1 class="">
-      <svg xmlns='http://www.w3.org/2000/svg' class='h-10 w-10 text-primary-600' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 17v-2a4 4 0 014-4h3m4 4v-2a4 4 0 00-4-4h-3m-4 4v-2a4 4 0 014-4h3m4 4v-2a4 4 0 00-4-4h-3' /></svg>
-      Roadmap
-    </h1>
-    <p class="">Organize your workflow with clarity and style</p>
-  </header>
-
-  <button
-    class=""
+  <Button
     on:click={() => showEditor = true}
   >
-    <svg xmlns='http://www.w3.org/2000/svg' class='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 4v16m8-8H4' /></svg>
+    <PlusOutline class="me-2 h-4 w-4" />
     New Card
-  </button>
+  </Button>
   {#if showEditor}
     <CardEditor on:close={() => showEditor = false} />
   {/if}
@@ -114,7 +108,7 @@
   {:else if $cardsState.status === fetchStatus.error}
     <p class="">Error pulling the cards: {$cardsState.errorMessage}</p>
   {:else}
-    <div class="">
+    <div class="flex flex-row gap-2 mx-4 my-4">
       {#if $projectStatusState.status === fetchStatus.loading}
         <p class="">Loading statuses...</p>
       {:else if $projectStatusState.status === fetchStatus.error}
@@ -142,7 +136,7 @@
                 on:dragend={handleDragEnd}
               />
             {:else}
-              <div class="" to get started!</span></div>
+              <div class=""><span>Create a card to get started!</span></div>
             {/each}
           </div>
         </div>
