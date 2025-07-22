@@ -1,6 +1,9 @@
 <script lang="ts">
+	import { CloseOutline } from 'flowbite-svelte-icons';
   import { createEventDispatcher, onMount } from 'svelte';
+  
   export let tags: (string | { name: string; id?: string })[] = [];
+
   const dispatch = createEventDispatcher();
   let inputValue = '';
   let inputRef: HTMLInputElement;
@@ -36,11 +39,11 @@
   });
 </script>
 
-<div class="">
+<div class="flex">
   {#each tags as tag, idx}
-    <span class="" on:click={() => removeTag(idx)}>
+    <span class="w-min flex flex-row items-center" on:click={() => removeTag(idx)}>
       {typeof tag === 'object' ? tag.name : tag}
-      <svg xmlns="http://www.w3.org/2000/svg" class="" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+      <CloseOutline class="me-2 h-4 w-4" />
     </span>
   {/each}
   <input

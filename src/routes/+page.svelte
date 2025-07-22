@@ -5,7 +5,7 @@
   import CardEditor from '$lib/components/CardCreator.svelte';
   import CardView from '$lib/components/CardView.svelte';
   import LandCard from '$lib/components/LandCard.svelte';
-	import { Button } from 'flowbite-svelte';
+	import Button from '$lib/components/Button.svelte';
 	import { PlusOutline } from 'flowbite-svelte-icons';
 
   // Statuses will be loaded from projectStatusState
@@ -92,7 +92,7 @@
 
 <div class="">
   <Button
-    on:click={() => showEditor = true}
+    click={() => showEditor = true}
   >
     <PlusOutline class="me-2 h-4 w-4" />
     New Card

@@ -9,10 +9,12 @@
   import PrioritySelector from './PrioritySelector.svelte';
   import { cardPriority } from '../config';
 	import TextArea from './TextArea.svelte';
-  import { Textarea, Input, Button, Heading } from 'flowbite-svelte'
+  import { Textarea, Input, Heading, P } from 'flowbite-svelte'
 	import { ClockSolid, FloppyDiskOutline, PenOutline } from 'flowbite-svelte-icons';
 	import Chip from './Chip.svelte';
+  import Button from './Button.svelte' 
   import moment from 'moment'
+
 
   let cardId: string;
   const dispatch = createEventDispatcher();
@@ -91,15 +93,13 @@
   function getPriorityColor(priorityValue: number): string {
     switch (priorityValue) {
       case cardPriority.CRITICAL:
-        return 'text-red-700 bg-red-100 border-red-200';
+        return 'red';
       case cardPriority.HIGH:
-        return 'text-orange-700 bg-orange-100 border-orange-200';
+        return 'yellow';
       case cardPriority.MEDIUM:
-        return 'text-yellow-700 bg-yellow-100 border-yellow-200';
       case cardPriority.LOW:
-        return 'text-green-700 bg-green-100 border-green-200';
       default:
-        return 'text-gray-700 bg-gray-100 border-gray-200';
+        return 'indigo';
     }
   }
 </script>
@@ -121,71 +121,55 @@
         <StatusSelector bind:selectedStatus={status} />
         <PrioritySelector bind:selectedPriority={priority} />
         <div class="">
-          <!-- <TextArea value={body} rows="5" /> -->
-          <Textarea bind:value={body} rows="5" />
+          <Textarea bind:value={body} rows={5} />
         </div>
         <div class="">
           <label class="">Tags:</label>
           <TagInput bind:tags />
         </div>
-        <!-- <div class="">
-          <label class="">Category:</label>
-          <CategorySelector bind:selectedCategory />
-        </div> -->
         <div class="flex justify-between align-middle">
           <div>
-          <Button on:click={handleSave} color="green">
+          <Button click={handleSave} color="green">
             <FloppyDiskOutline class="me-2 h-4 w-4" />
             Save
           </Button>
           </div>
           <div>
-          <Button on:click={() => editing = false}>Cancel</Button>
-          <Button on:click={handleDelete} color="red">Delete</Button>
+          <Button click={() => editing = false}>Cancel</Button>
+          <Button click={handleDelete} color="red">Delete</Button>
         </div>
         </div>
       {:else}
         <div class="">
         <div class="flex justify-between">
-            {selectedCategory}
+                {$cardState.data.expand?.category?.name}
             <Chip border>
               <ClockSolid class="text-primary-800 dark:text-primary-400 me-1.5 h-2.5 w-2.5" />
                     {moment($cardState.data.created).fromNow()}
             </Chip>
+            <Chip color={getPriorityName(priority)}>
             {getPriorityName(priority)}
+            </Chip>
         </div>
         <div class="flex justify-between">
             <Heading tag="h2" class="text-4xl font-extrabold ">{title}</Heading>
             <StatusSelector bind:selectedStatus={status} />
           </div>
         </div>
-        <div class=""><span class="">Card Details</span></div>
         <Textarea disabled bind:value={body} />
-        <div class="">
-          <div class="">
+        <div class="flex flex-wrap gap-2">
             {#each tags as tag}
-              <span class="">{typeof tag === 'object' ? tag.name : tag}</span>
+              <Chip rounded color="indigo">{typeof tag === 'object' ? tag.name : tag}</Chip>
             {/each}
-          </div>
         </div>
-        {#if $cardState.data?.expand?.category}
-          <div class="">
-            <div class="">
-              <span class="">Category:</span>
-              <span class="">
-                {$cardState.data.expand.category.name}
-              </span>
-            </div>
-          </div>
-        {/if}
         <div class="flex justify-between align-middle">
-          <Button class="" on:click={() => editing = true}>
+          <Button class="" click={() => editing = true}>
             <PenOutline class="me-2 h-4 w-4"/>
             Edit
           </Button>
-          <Button class="" on:click={close}>Close</Button>
+          <Button class="" click={close}>Close</Button>
         </div>
-        <h3 class="">Comments</h3>
+        <hr>
         <div class="flex gap-2">
           <Input
             placeholder="Is there anything you'd like to add?"
@@ -194,18 +178,18 @@
           />
           <Button
             class=""
-            on:click={handleCommentSubmit}
+            click={handleCommentSubmit}
             disabled={!commentDraft.trim()}
           >
             Post
           </Button>
         </div>
-        <div class="">
+        <div class="flex flex-col gap-2">
           {#if $cardState.data?.expand?.comment_via_card?.length}
             {#each $cardState.data.expand.comment_via_card as commentObject}
               <div class="">
-                <div class="">{(new Date(commentObject.created)).toLocaleString()}</div>
-                <div class="">{commentObject.body}</div>
+                <P size="xs" class="text-gray-700 dark:text-gray-500" >{(new Date(commentObject.created)).toLocaleString()}</P>
+                <P size="">{commentObject.body}</P>
               </div>
             {/each}
           {:else}
