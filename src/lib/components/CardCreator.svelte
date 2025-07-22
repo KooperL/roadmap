@@ -7,6 +7,10 @@
   import CategorySelector from './CategorySelector.svelte';
   import StatusSelector from './StatusSelector.svelte';
   import PrioritySelector from './PrioritySelector.svelte';
+	import { Input, Textarea } from 'flowbite-svelte';
+	import TextArea from './TextArea.svelte';
+	import { PlusOutline } from 'flowbite-svelte-icons';
+  import Button from './Button.svelte'
 
   const dispatch = createEventDispatcher();
 
@@ -56,42 +60,22 @@
 
 <div class="fixed inset-0 z-[1000] flex items-center justify-center bg-gradient-to-br from-primary-100/60 via-white/70 to-secondary-100/60 backdrop-blur-[6px] transition-all duration-300 animate-fade-in" on:click|self={close}>
   <form class="relative bg-white/80 border border-gray-200 shadow-2xl rounded-3xl p-8 min-w-[320px] max-w-[95vw] w-full sm:w-[420px] flex flex-col gap-2 overflow-auto animate-fade-in" on:submit|preventDefault={submit}>
-    <div class="">
-      <div class="">
-        {title?.charAt(0) || '+'}
-      </div>
       <h2 class="">Create New Card</h2>
-    </div>
-    <div class="">
-      <label class="" for="title">Title</label>
-      <input id="title" type="text" bind:value={title} required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white/80 text-lg font-medium" />
-    </div>
-    <div class="">
-      <label class="" for="body">Body</label>
-      <textarea id="body" bind:value={body} required rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 bg-white/80 text-base"></textarea>
-    </div>
-    <div class="">
-      <label class="" for="status">Status</label>
-      <StatusSelector bind:selectedStatus={status} />
-    </div>
-    <div class="">
-      <label class="" for="priority">Priority</label>
-      <PrioritySelector bind:selectedPriority={priority} />
-    </div>
+      <Input id="title" bind:value={title} placeholder="Title..." required class="text-lg font-medium" />
+      <Textarea id="body" bind:value={body} required rows={4} placeholder="Description" class="" />
+        <StatusSelector bind:selectedStatus={status} />
+        <PrioritySelector bind:selectedPriority={priority} />
+      <CategorySelector bind:selectedCategory />
     <div class="">
       <label class="" for="tags">Tags</label>
       <TagInput bind:tags />
     </div>
-    <div class="">
-      <label class="" for="category">Category</label>
-      <CategorySelector bind:selectedCategory />
-    </div>
-    <div class="">
-      <button type="submit" class="">
-        <svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 4v16m8-8H4' /></svg>
+    <div class="flex justify-between align-middle">
+      <Button click={submit} class="">
+        <PlusOutline class="me-2 h-4 w-4" />
         Create
-      </button>
-      <button type="button" class="" on:click={close}>Cancel</button>
+      </Button>
+      <Button class="" click={close}>Cancel</Button>
     </div>
   </form>
 </div>

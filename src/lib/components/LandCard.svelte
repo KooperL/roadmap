@@ -76,27 +76,20 @@
   <Card>
   <div class="">
     <div class="">
-      {card.title?.charAt(0) ?? '?'}
+                {card.expand?.category?.name}
+      <span class="px-2 py-0.5 rounded-full text-xs font-semibold border shadow-sm {getPriorityColor(card.priority)}">
+        {getPriorityName(card.priority)}
+      </span>
     </div>
     <strong class="">{card.title}</strong>
   </div>
   <div class="">{card.body}</div>
   <div class="">
-    {#if card.priority}
-      <span class="px-2 py-0.5 rounded-full text-xs font-semibold border shadow-sm {getPriorityColor(card.priority)}">
-        {getPriorityName(card.priority)}
-      </span>
-    {/if}
-    {#if card.expand?.category}
-      <span class="">
-        {card.expand.category.name}
-      </span>
-    {/if}
     <span class="">{currentStatus}</span>
   </div>
   
   <!-- Drag indicator -->
-  <div class="">
+  <div class="hidden hover:inline">
     <div class="">Drag to move</div>
   </div>
     </Card>
