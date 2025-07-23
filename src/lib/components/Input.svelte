@@ -1,9 +1,6 @@
 <script>
-import { Input } from 'flowbite-svelte'
-export let className = ""
+	import { Input } from 'flowbite-svelte';
+	export let className = '';
 </script>
 
-<Input
-  {...$$restProps}
-  class={className}
-/>
+<Input {...$$restProps} class={className} />

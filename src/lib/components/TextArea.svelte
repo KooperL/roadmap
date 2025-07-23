@@ -1,11 +1,7 @@
 <script>
-import { Textarea } from 'flowbite-svelte'
-export let className = ""
-let { value , ...props } = $$restProps;
+	import { Textarea } from 'flowbite-svelte';
+	export let className = '';
+	let { value, ...props } = $$restProps;
 </script>
 
-<Textarea
-  bind:value={value}
-  {...$$restProps}
-  class={className}
-/>
+<Textarea bind:value {...$$restProps} class={className} />
