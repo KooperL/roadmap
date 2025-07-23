@@ -5,7 +5,7 @@ import { env } from '$env/dynamic/public';
 const HOST = 'https://kroadmapapp.pockethost.io/' ?? env.PUBLIC_POCKETBASE_URL;
 
 export const pocketbaseCustomEndpoints = {
-		health: HOST + 'api/health',
+	health: HOST + 'api/health'
 } as const;
 
 interface ApiData {

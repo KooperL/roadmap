@@ -57,7 +57,7 @@
 				method: 'POST'
 			}
 		);
-		toast.info('Successfully sent')
+		toast.info('Successfully sent');
 		modalOpen = false;
 	};
 </script>

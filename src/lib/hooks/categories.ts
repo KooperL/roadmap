@@ -1,6 +1,6 @@
-import { cardCategoryState, fetchStatus } from "../app/stores";
-import { logger } from "../logger";
-import { pb } from "../pocketbase";
+import { cardCategoryState, fetchStatus } from '../app/stores';
+import { logger } from '../logger';
+import { pb } from '../pocketbase';
 
 export const getCategories = async () => {
 	try {
@@ -27,7 +27,7 @@ export const getCategories = async () => {
 			errorMessage: e.message
 		}));
 	}
-}
+};
 
 export const resetGetCategories = () => {
 	logger.info('resetGetCategories hook', 'Hook called');
@@ -36,7 +36,7 @@ export const resetGetCategories = () => {
 		errorMessage: undefined,
 		data: undefined
 	}));
-}
+};
 
 export const createCategory = async (name: string) => {
 	try {
@@ -65,7 +65,7 @@ export const createCategory = async (name: string) => {
 		}));
 		throw e;
 	}
-}
+};
 
 export const resetCreateCategory = () => {
 	logger.info('resetCreateCategory hook', 'Hook called');
@@ -74,4 +74,4 @@ export const resetCreateCategory = () => {
 		errorMessage: undefined,
 		data: undefined
 	}));
-}
+};

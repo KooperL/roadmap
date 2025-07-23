@@ -60,9 +60,7 @@
 		</div>
 	</main>
 	<Footer class="">
-		<FooterLinkGroup
-			ulClass=""
-		>
+		<FooterLinkGroup ulClass="">
 			<FooterLink href="/">Home</FooterLink>
 			<FooterLink href="/about">About</FooterLink>
 			<FooterLink href="/terms">Terms of Service</FooterLink>

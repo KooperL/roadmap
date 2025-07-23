@@ -1,6 +1,16 @@
-import { cardsState, cardState, commentCreateState, createCardState, deleteCardState, fetchCreateTagState, fetchStatus, projectStatusState, updateCardState } from "../app/stores";
-import { logger } from "../logger";
-import { pb } from "../pocketbase";
+import {
+	cardsState,
+	cardState,
+	commentCreateState,
+	createCardState,
+	deleteCardState,
+	fetchCreateTagState,
+	fetchStatus,
+	projectStatusState,
+	updateCardState
+} from '../app/stores';
+import { logger } from '../logger';
+import { pb } from '../pocketbase';
 
 export const getCards = async (projectId: string) => {
 	try {
@@ -11,7 +21,7 @@ export const getCards = async (projectId: string) => {
 			data: undefined
 		}));
 		const fetchCardsResult = await pb.collection('card').getList(1, 50, {
-			expand: 'category',
+			expand: 'category'
 			// filter: 'project = "projectId"'
 		});
 		cardsState.update((state) => ({
@@ -28,7 +38,7 @@ export const getCards = async (projectId: string) => {
 			errorMessage: e.message
 		}));
 	}
-}
+};
 
 export const resetGetCards = () => {
 	logger.info('resetGetCards hook', 'Hook called');
@@ -37,7 +47,7 @@ export const resetGetCards = () => {
 		errorMessage: undefined,
 		data: undefined
 	}));
-}
+};
 
 export const getCard = async (cardId: string) => {
 	try {
@@ -48,7 +58,7 @@ export const getCard = async (cardId: string) => {
 			data: undefined
 		}));
 		const fetchCardResult = await pb.collection('card').getOne(cardId, {
-			expand: ['comment_via_card', 'tags', 'category'].join(','),
+			expand: ['comment_via_card', 'tags', 'category'].join(',')
 		});
 		cardState.update((state) => ({
 			errorMessage: undefined,
@@ -64,7 +74,7 @@ export const getCard = async (cardId: string) => {
 			errorMessage: e.message
 		}));
 	}
-}
+};
 
 export const resetGetCard = () => {
 	logger.info('resetGetCard hook', 'Hook called');
@@ -73,7 +83,7 @@ export const resetGetCard = () => {
 		errorMessage: undefined,
 		data: undefined
 	}));
-}
+};
 
 export const fetchCreateTags = async (projectId: string, tags: string[]) => {
 	try {
@@ -83,26 +93,26 @@ export const fetchCreateTags = async (projectId: string, tags: string[]) => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-    let initialFetch: any[] = []
-    if (!tags.length) {
-		  initialFetch = await pb.collection('tags').getFullList({
-		  	filter: tags.map((tag) => `name="${tag}"`).join('||')
-		  	// filter: 'project = "projectId"'
-      });
-    }
-    const initialFetchTags = initialFetch.map(record => record.name)
-    const missingTags = tags.filter(tagString => {
-      return !initialFetchTags.includes(tagString)
-    })
-    let createdTags = []
-    for (let i = 0; i < missingTags.length; i++) {
-      const missingTag = missingTags[i]
-      const createMissingTag = await pb.collection('tags').create({
-        // projectId: projectId,
-        name: missingTag
-      })
-      createdTags.push(createMissingTag)
-    }
+		let initialFetch: any[] = [];
+		if (!tags.length) {
+			initialFetch = await pb.collection('tags').getFullList({
+				filter: tags.map((tag) => `name="${tag}"`).join('||')
+				// filter: 'project = "projectId"'
+			});
+		}
+		const initialFetchTags = initialFetch.map((record) => record.name);
+		const missingTags = tags.filter((tagString) => {
+			return !initialFetchTags.includes(tagString);
+		});
+		let createdTags = [];
+		for (let i = 0; i < missingTags.length; i++) {
+			const missingTag = missingTags[i];
+			const createMissingTag = await pb.collection('tags').create({
+				// projectId: projectId,
+				name: missingTag
+			});
+			createdTags.push(createMissingTag);
+		}
 		fetchCreateTagState.update((state) => ({
 			errorMessage: undefined,
 			status: fetchStatus.success,
@@ -117,7 +127,7 @@ export const fetchCreateTags = async (projectId: string, tags: string[]) => {
 			errorMessage: e.message
 		}));
 	}
-}
+};
 
 export const resetFetchCreateTags = () => {
 	logger.info('resetFetchCreateTags hook', 'Hook called');
@@ -126,7 +136,7 @@ export const resetFetchCreateTags = () => {
 		errorMessage: undefined,
 		data: undefined
 	}));
-}
+};
 
 export const createCard = async (details: any) => {
 	try {
@@ -137,13 +147,13 @@ export const createCard = async (details: any) => {
 			data: undefined
 		}));
 		const putCardResult = await pb.collection('card').create({
-      title: details.title,
+			title: details.title,
 			body: details.body,
 			status: details.status,
-      priority: details.priority,
-      tags: details.tags,
-      category: details.category
-    });
+			priority: details.priority,
+			tags: details.tags,
+			category: details.category
+		});
 		createCardState.update((state) => ({
 			errorMessage: undefined,
 			status: fetchStatus.success,
@@ -158,7 +168,7 @@ export const createCard = async (details: any) => {
 			errorMessage: e.message
 		}));
 	}
-}
+};
 
 export const resetCreateCard = () => {
 	logger.info('resetCreateCard hook', 'Hook called');
@@ -167,7 +177,7 @@ export const resetCreateCard = () => {
 		errorMessage: undefined,
 		data: undefined
 	}));
-}
+};
 
 export const updateCard = async (id: string, details: any) => {
 	try {
@@ -179,12 +189,12 @@ export const updateCard = async (id: string, details: any) => {
 		}));
 		const updatedCardResult = await pb.collection('card').update(id, {
 			title: details.title,
-      body: details.body,
+			body: details.body,
 			status: details.status,
-      priority: details.priority,
-      tags: details.tags,
-      category: details.category
-    });
+			priority: details.priority,
+			tags: details.tags,
+			category: details.category
+		});
 		updateCardState.update((state) => ({
 			errorMessage: undefined,
 			status: fetchStatus.success,
@@ -199,7 +209,7 @@ export const updateCard = async (id: string, details: any) => {
 			errorMessage: e.message
 		}));
 	}
-}
+};
 
 export const resetUpdateCard = () => {
 	logger.info('resetUpdateCard hook', 'Hook called');
@@ -208,7 +218,7 @@ export const resetUpdateCard = () => {
 		errorMessage: undefined,
 		data: undefined
 	}));
-}
+};
 
 export const deleteCard = async (id: string) => {
 	try {
@@ -233,7 +243,7 @@ export const deleteCard = async (id: string) => {
 			errorMessage: e.message
 		}));
 	}
-}
+};
 
 export const resetDeleteCard = () => {
 	logger.info('resetDeleteCard hook', 'Hook called');
@@ -242,7 +252,7 @@ export const resetDeleteCard = () => {
 		errorMessage: undefined,
 		data: undefined
 	}));
-}
+};
 
 export const cardComment = async (cardId: string, comment: string) => {
 	try {
@@ -270,7 +280,7 @@ export const cardComment = async (cardId: string, comment: string) => {
 			errorMessage: e.message
 		}));
 	}
-}
+};
 
 export const resetCardComment = () => {
 	logger.info('resetCardComment hook', 'Hook called');
@@ -279,7 +289,7 @@ export const resetCardComment = () => {
 		errorMessage: undefined,
 		data: undefined
 	}));
-}
+};
 
 export const getProjectStatus = async (projectId: string) => {
 	try {
@@ -293,19 +303,19 @@ export const getProjectStatus = async (projectId: string) => {
 			errorMessage: undefined,
 			status: fetchStatus.success,
 			data: [
-        {
-          name: 'TODO',
-          position: 0
-        },
-        {
-          name: 'In progress',
-          position: 1
-        },
-        {
-          name: 'Done',
-          position: 3
-        },
-      ]
+				{
+					name: 'TODO',
+					position: 0
+				},
+				{
+					name: 'In progress',
+					position: 1
+				},
+				{
+					name: 'Done',
+					position: 3
+				}
+			]
 		}));
 		logger.debug('getProjectStatus hook', 'Tenants fetched');
 	} catch (e: any) {
@@ -316,7 +326,7 @@ export const getProjectStatus = async (projectId: string) => {
 			errorMessage: e.message
 		}));
 	}
-}
+};
 
 export const resetGetProjectStatus = () => {
 	logger.info('resetGetProjectStatus hook', 'Hook called');
@@ -325,4 +335,4 @@ export const resetGetProjectStatus = () => {
 		errorMessage: undefined,
 		data: undefined
 	}));
-}
+};
