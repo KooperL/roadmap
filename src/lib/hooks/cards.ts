@@ -4,7 +4,6 @@ import {
 	commentCreateState,
 	createCardState,
 	deleteCardState,
-	fetchCreateTagState,
 	fetchStatus,
 	projectStatusState,
 	updateCardState
@@ -20,14 +19,13 @@ export const getCards = async (projectId: string) => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const fetchCardsResult = await pb.collection('card').getList(1, 50, {
-			expand: 'category'
+		const fetchCardsResult = await pb.collection('cardsShallow').getFullList({
 			// filter: 'project = "projectId"'
 		});
 		cardsState.update((state) => ({
 			errorMessage: undefined,
 			status: fetchStatus.success,
-			data: fetchCardsResult.items
+			data: fetchCardsResult
 		}));
 		logger.debug('getCards hook', 'Cards fetched');
 	} catch (e: any) {
@@ -57,13 +55,34 @@ export const getCard = async (cardId: string) => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const fetchCardResult = await pb.collection('card').getOne(cardId, {
-			expand: ['comment_via_card', 'tags', 'category'].join(',')
-		});
+		const [card, title, body, category, priority, status] = await Promise.all([
+			pb.collection('card').getOne(cardId),
+			pb.collection('title_tracked').getFirstListItem(`card = "${cardId}"`, { sort: '-created' }),
+			pb.collection('body_tracked').getFirstListItem(`card = "${cardId}"`, { sort: '-created' }),
+			pb
+				.collection('category_tracked')
+				.getFirstListItem(`card = "${cardId}"`, { sort: '-created', expand: 'value' }),
+			pb
+				.collection('priority_tracked')
+				.getFirstListItem(`card = "${cardId}"`, { sort: '-created' }),
+			pb.collection('status_tracked').getFirstListItem(`card = "${cardId}"`, { sort: '-created' })
+		]);
+
+    console.log(title)
+    console.log(category)
+
 		cardState.update((state) => ({
 			errorMessage: undefined,
 			status: fetchStatus.success,
-			data: fetchCardResult
+			data: {
+				id: card.id,
+				created: card.created,
+				title: title.value,
+				body: body.value,
+				category: category?.expand?.value?.name,
+				priority: priority.value,
+				status: status.value
+			}
 		}));
 		logger.debug('getCard hook', 'Card fetched');
 	} catch (e: any) {
@@ -85,59 +104,6 @@ export const resetGetCard = () => {
 	}));
 };
 
-export const fetchCreateTags = async (projectId: string, tags: string[]) => {
-	try {
-		logger.info('fetchCreateTags hook', 'Hook called');
-		fetchCreateTagState.update((state) => ({
-			status: fetchStatus.loading,
-			errorMessage: undefined,
-			data: undefined
-		}));
-		let initialFetch: any[] = [];
-		if (!tags.length) {
-			initialFetch = await pb.collection('tags').getFullList({
-				filter: tags.map((tag) => `name="${tag}"`).join('||')
-				// filter: 'project = "projectId"'
-			});
-		}
-		const initialFetchTags = initialFetch.map((record) => record.name);
-		const missingTags = tags.filter((tagString) => {
-			return !initialFetchTags.includes(tagString);
-		});
-		let createdTags = [];
-		for (let i = 0; i < missingTags.length; i++) {
-			const missingTag = missingTags[i];
-			const createMissingTag = await pb.collection('tags').create({
-				// projectId: projectId,
-				name: missingTag
-			});
-			createdTags.push(createMissingTag);
-		}
-		fetchCreateTagState.update((state) => ({
-			errorMessage: undefined,
-			status: fetchStatus.success,
-			data: [...initialFetch, ...createdTags]
-		}));
-		logger.debug('fetchCreateTags hook', 'Tag IDs fetched');
-	} catch (e: any) {
-		logger.error('fetchCreateTags hook', e.message);
-		fetchCreateTagState.update((state) => ({
-			status: fetchStatus.error,
-			data: undefined,
-			errorMessage: e.message
-		}));
-	}
-};
-
-export const resetFetchCreateTags = () => {
-	logger.info('resetFetchCreateTags hook', 'Hook called');
-	fetchCreateTagState.update((state) => ({
-		status: fetchStatus.idle,
-		errorMessage: undefined,
-		data: undefined
-	}));
-};
-
 export const createCard = async (details: any) => {
 	try {
 		logger.info('createCard hook', 'Hook called');
@@ -146,18 +112,43 @@ export const createCard = async (details: any) => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const putCardResult = await pb.collection('card').create({
-			title: details.title,
-			body: details.body,
-			status: details.status,
-			priority: details.priority,
-			tags: details.tags,
-			category: details.category
-		});
+		const putCardResult = await pb.collection('card').create({});
+
+		await Promise.all([
+			pb.collection('title_tracked').create({
+				card: putCardResult.id,
+				value: details.title
+			}),
+			pb.collection('body_tracked').create({
+				card: putCardResult.id,
+				value: details.body
+			}),
+			pb.collection('status_tracked').create({
+				card: putCardResult.id,
+				value: details.status
+			}),
+			pb.collection('priority_tracked').create({
+				card: putCardResult.id,
+				value: details.priority
+			}),
+			pb.collection('category_tracked').create({
+				card: putCardResult.id,
+				value: details.category
+			}),
+			...details.tags.map((tagRaw: any) => {
+				const tag = typeof tagRaw === 'object' ? tagRaw.name : tagRaw;
+				return pb.collection('tag_tracked').create({
+					card: putCardResult.id,
+					action: 'add',
+					value: details.title
+				});
+			})
+		]);
+
 		createCardState.update((state) => ({
 			errorMessage: undefined,
 			status: fetchStatus.success,
-			data: putCardResult.items
+			data: putCardResult
 		}));
 		logger.debug('createCard hook', 'Card created');
 	} catch (e: any) {
@@ -179,7 +170,7 @@ export const resetCreateCard = () => {
 	}));
 };
 
-export const updateCard = async (id: string, details: any) => {
+export const updateCard = async (table: string, cardId: string, value: any, action = 'add') => {
 	try {
 		logger.info('updateCard hook', 'Hook called');
 		updateCardState.update((state) => ({
@@ -187,18 +178,15 @@ export const updateCard = async (id: string, details: any) => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const updatedCardResult = await pb.collection('card').update(id, {
-			title: details.title,
-			body: details.body,
-			status: details.status,
-			priority: details.priority,
-			tags: details.tags,
-			category: details.category
+		const updatedCardResult = await pb.collection(table).create({
+			card: cardId,
+			action: action,
+			value: value
 		});
 		updateCardState.update((state) => ({
 			errorMessage: undefined,
 			status: fetchStatus.success,
-			data: updatedCardResult.items
+			data: undefined
 		}));
 		logger.debug('updateCard hook', 'Card updated');
 	} catch (e: any) {

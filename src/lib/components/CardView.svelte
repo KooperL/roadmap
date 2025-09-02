@@ -6,10 +6,9 @@
 		deleteCard,
 		getCards,
 		cardComment,
-		fetchCreateTags,
 		resetGetCards
 	} from '../hooks/cards';
-	import { cardState, fetchCreateTagState, fetchStatus } from '../app/stores';
+	import { cardState, fetchStatus } from '../app/stores';
 	import { createEventDispatcher } from 'svelte';
 	import TagInput from './TagInput.svelte';
 	import CategorySelector from './CategorySelector.svelte';
@@ -54,26 +53,17 @@
 	}
 
 	async function handleSave() {
-		if (tags.length)
-			await fetchCreateTags(
-				'',
-				tags.map((tag) => {
-					return typeof tag === 'object' ? tag.name : tag;
-				})
-			);
-		let desiredTags: any[] = [];
-		if ($fetchCreateTagState.status === fetchStatus.success) {
-			desiredTags = $fetchCreateTagState.data;
-		}
-
-		await updateCard(cardId, {
-			...(title !== $cardState.data.title && { title }),
-			...(body !== $cardState.data.body && { body }),
-			...(status !== $cardState.data.status && { status }),
-			...(priority !== $cardState.data.priority && { priority }),
-			tags: desiredTags.map((record: any) => record.id),
-			...(selectedCategory !== $cardState.data.category && { category: selectedCategory })
-		});
+		let promises = [];
+		if (title !== $cardState.data.title) promises.push(updateCard('title_tracked', cardId, title));
+		if (body !== $cardState.data.body) promises.push(updateCard('body_tracked', cardId, body));
+		if (status !== $cardState.data.status)
+			promises.push(updateCard('status_tracked', cardId, status));
+		if (priority !== $cardState.data.priority)
+			promises.push(updateCard('priority_tracked', cardId, priority));
+		if (selectedCategory !== $cardState.data.category)
+			promises.push(updateCard('category_tracked', cardId, selectedCategory));
+		// tags: desiredTags.map((record: any) => record.id),
+		await Promise.all(promises);
 		editing = false;
 		await getCard(cardId);
 		getCards('');
@@ -159,7 +149,7 @@
 			{:else}
 				<div class="">
 					<div class="flex justify-between">
-						{$cardState.data.expand?.category?.name}
+						{$cardState.data.category}
 						<Chip border>
 							<ClockSolid class="me-1.5 h-2.5 w-2.5 text-primary-800 dark:text-primary-400" />
 							{moment($cardState.data.created).fromNow()}
