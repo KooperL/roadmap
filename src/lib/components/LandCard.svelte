@@ -31,17 +31,17 @@
 		}
 
 		// Dispatch drag start event
-		dispatch('dragstart', { cardId: card.id, status: currentStatus });
+		dispatch('dragstart', { cardId: card.card, status: currentStatus });
 	}
 
 	function handleDragEnd() {
 		isDragging = false;
-		dispatch('dragend', { cardId: card.id });
+		dispatch('dragend', { cardId: card.card });
 	}
 
 	function handleClick() {
 		if (!isDragging) {
-			dispatch('open', { cardId: card.id });
+			dispatch('open', { cardId: card.card });
 		}
 	}
 
@@ -76,7 +76,7 @@
 	<Card>
 		<div class="">
 			<div class="">
-				{card.expand?.category?.name}
+				{card.category}
 				<span
 					class="rounded-full border px-2 py-0.5 text-xs font-semibold shadow-sm {getPriorityColor(
 						card.priority

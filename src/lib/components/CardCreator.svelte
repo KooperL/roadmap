@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { onDestroy } from 'svelte';
-	import { createCardState, fetchCreateTagState, fetchStatus } from '$lib/app/stores';
-	import { createCard, fetchCreateTags, getCards, resetGetCards } from '$lib/hooks/cards';
+	import { createCardState, fetchStatus } from '$lib/app/stores';
+	import { createCard, getCards, resetGetCards } from '$lib/hooks/cards';
 	import TagInput from './TagInput.svelte';
 	import CategorySelector from './CategorySelector.svelte';
 	import StatusSelector from './StatusSelector.svelte';
@@ -11,13 +11,14 @@
 	import TextArea from './TextArea.svelte';
 	import { PlusOutline } from 'flowbite-svelte-icons';
 	import Button from './Button.svelte';
+	import { cardPriority } from '$lib/config';
 
 	const dispatch = createEventDispatcher();
 
 	let title = '';
 	let body = '';
 	let status = '';
-	let priority = 5; // Default to MEDIUM
+	let priority = cardPriority.MEDIUM; // Default to MEDIUM
 	let tags: (string | { name: string; id?: string })[] = [];
 	let selectedCategory: string | null = null;
 
@@ -25,7 +26,7 @@
 
 	// Listen for card creation status
 	unsubscribe = createCardState.subscribe(($state) => {
-		if ($state.status === 'success') {
+		if ($state.status === fetchStatus.success) {
 			dispatch('close');
 		}
 	});
@@ -33,24 +34,14 @@
 	onDestroy(() => {
 		unsubscribe && unsubscribe();
 	});
-
+  $: console.log(selectedCategory)
 	async function submit() {
-		tags.length > 0 &&
-			(await fetchCreateTags(
-				'',
-				tags.map((tag) => (typeof tag === 'object' ? tag.name : tag))
-			));
-		let tagRecords = [];
-		if ($fetchCreateTagState.status === fetchStatus.success) {
-			tagRecords = $fetchCreateTagState.data;
-		}
 		await createCard({
 			title,
 			body,
 			status,
 			priority,
-			...(tagRecords &&
-				tagRecords.length > 0 && { tags: tagRecords.map((record: any) => record.id) }),
+			...(tags && tags.length > 0 && { tags: tags.map((record: any) => record.id) }),
 
 			category: selectedCategory
 		});

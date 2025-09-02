@@ -129,7 +129,7 @@
 							<span class="">{getCardsByStatus(status.name).length} cards</span>
 						</div>
 						<div class="">
-							{#each getCardsByStatus(status.name) as card (card.id)}
+							{#each getCardsByStatus(status.name) as card (card.card)}
 								<LandCard
 									{card}
 									currentStatus={status.name}
