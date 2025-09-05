@@ -29,7 +29,7 @@ export interface WritableState<T> {
 export const metadata = writable<Metadata>({});
 export const toast = writable<Toast>({});
 
-export const projects = writable<WritableState<any>>({
+export const projectsState = writable<WritableState<any>>({
 	status: fetchStatus.idle,
 	data: undefined,
 	errorMessage: undefined

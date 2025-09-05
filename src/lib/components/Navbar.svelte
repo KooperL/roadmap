@@ -30,16 +30,18 @@
 </script>
 
 <Navbar>
-	<div class="flex flex-wrap gap-4">
+	<div class="flex justify-between gap-4 w-full">
 		<NavBrand href="/">
 			<span
 				class="self-center whitespace-nowrap pr-2 text-8xl text-xl font-bold font-semibold text-primary-700 dark:text-white"
-				>name</span
+				>Roadmap</span
 			>
 		</NavBrand>
+      {#if $currentUser?.model?.id}
 		<NavBrand href="/">
-			<span class="hidden self-center whitespace-nowrap sm:block dark:text-white">•</span>
+			<span class="hidden self-center whitespace-nowrap sm:block dark:text-white">Logged in</span>
 		</NavBrand>
+{/if}
 	</div>
 </Navbar>
 

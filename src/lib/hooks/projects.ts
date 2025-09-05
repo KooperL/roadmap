@@ -1,25 +1,25 @@
-import { cards, fetchStatus, projects } from '../app/stores';
+import { cardsState, fetchStatus, projectsState } from '../app/stores';
 import { logger } from '../logger';
 import { pb } from '../pocketbase';
 
 export const getProjects = async () => {
 	try {
 		logger.info('getTenants hook', 'Hook called');
-		projects.update((state) => ({
+		projectsState.update((state) => ({
 			status: 'loading',
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const pbTenants = await pb.collection('projects').getList(1, 50, {});
-		projects.update((state) => ({
+		const pbTenants = await pb.collection('project').getFullList();
+		projectsState.update((state) => ({
 			errorMessage: undefined,
 			status: fetchStatus.success,
-			data: pbTenants.items
+			data: pbTenants
 		}));
 		logger.debug('getTenants hook', 'Tenants fetched');
 	} catch (e: any) {
 		logger.error('getTenants hook', e.message);
-		projects.update((state) => ({
+		projectsState.update((state) => ({
 			status: fetchStatus.error,
 			data: undefined,
 			errorMessage: e.message
@@ -29,6 +29,7 @@ export const getProjects = async () => {
 
 export const newProject = async () => {
 	try {
+    throw new Error('TODO')
 		logger.info('getTenants hook', 'Hook called');
 		cards.update((state) => ({
 			status: 'loading',
@@ -47,7 +48,7 @@ export const newProject = async () => {
 		logger.debug('getTenants hook', 'Tenants fetched');
 	} catch (e: any) {
 		logger.error('getTenants hook', e.message);
-		cards.update((state) => ({
+		cardsState.update((state) => ({
 			status: fetchStatus.error,
 			data: undefined,
 			errorMessage: e.message
