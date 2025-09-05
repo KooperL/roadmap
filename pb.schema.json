@@ -886,6 +886,19 @@
                 "type": "text"
             },
             {
+                "cascadeDelete": false,
+                "collectionId": "pbc_3202395908",
+                "hidden": false,
+                "id": "relation800313582",
+                "maxSelect": 1,
+                "minSelect": 0,
+                "name": "project",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "relation"
+            },
+            {
                 "hidden": false,
                 "id": "autodate2990389176",
                 "name": "created",
@@ -1174,6 +1187,96 @@
         "system": false
     },
     {
+        "id": "pbc_697512169",
+        "listRule": "",
+        "viewRule": "",
+        "createRule": "",
+        "updateRule": null,
+        "deleteRule": null,
+        "name": "meta_tracked",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text494360628",
+                "max": 0,
+                "min": 0,
+                "name": "value",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "hidden": false,
+                "id": "select1204587666",
+                "maxSelect": 1,
+                "name": "action",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "select",
+                "values": [
+                    "add",
+                    "remove"
+                ]
+            },
+            {
+                "hidden": false,
+                "id": "select2363381545",
+                "maxSelect": 1,
+                "name": "type",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "select",
+                "values": [
+                    "tag",
+                    "label"
+                ]
+            },
+            {
+                "hidden": false,
+                "id": "autodate2990389176",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            },
+            {
+                "hidden": false,
+                "id": "autodate3332085495",
+                "name": "updated",
+                "onCreate": true,
+                "onUpdate": true,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [],
+        "system": false
+    },
+    {
         "id": "pbc_2180453542",
         "listRule": "",
         "viewRule": "",
@@ -1260,13 +1363,13 @@
         "system": false
     },
     {
-        "id": "pbc_2005704172",
+        "id": "pbc_3202395908",
         "listRule": "",
         "viewRule": "",
         "createRule": "",
         "updateRule": null,
         "deleteRule": null,
-        "name": "status_tracked",
+        "name": "project",
         "type": "base",
         "fields": [
             {
@@ -1286,10 +1389,10 @@
             {
                 "autogeneratePattern": "",
                 "hidden": false,
-                "id": "text999008199",
+                "id": "text4262580536",
                 "max": 0,
                 "min": 0,
-                "name": "value",
+                "name": "name",
                 "pattern": "",
                 "presentable": false,
                 "primaryKey": false,
@@ -1299,25 +1402,12 @@
             },
             {
                 "cascadeDelete": false,
-                "collectionId": "pbc_823787363",
+                "collectionId": "pbc_629915663",
                 "hidden": false,
-                "id": "relation370448595",
+                "id": "relation1707448342",
                 "maxSelect": 1,
                 "minSelect": 0,
-                "name": "card",
-                "presentable": false,
-                "required": false,
-                "system": false,
-                "type": "relation"
-            },
-            {
-                "cascadeDelete": false,
-                "collectionId": "_pb_users_auth_",
-                "hidden": false,
-                "id": "relation2375276105",
-                "maxSelect": 1,
-                "minSelect": 0,
-                "name": "user",
+                "name": "workflow",
                 "presentable": false,
                 "required": false,
                 "system": false,
@@ -1348,13 +1438,13 @@
         "system": false
     },
     {
-        "id": "pbc_697512169",
+        "id": "pbc_1276319826",
         "listRule": "",
         "viewRule": "",
-        "createRule": "",
+        "createRule": null,
         "updateRule": null,
         "deleteRule": null,
-        "name": "tag_tracked",
+        "name": "status",
         "type": "base",
         "fields": [
             {
@@ -1377,7 +1467,7 @@
                 "id": "text494360628",
                 "max": 0,
                 "min": 0,
-                "name": "value",
+                "name": "name",
                 "pattern": "",
                 "presentable": false,
                 "primaryKey": false,
@@ -1387,17 +1477,120 @@
             },
             {
                 "hidden": false,
-                "id": "select1204587666",
-                "maxSelect": 1,
-                "name": "action",
+                "id": "bool458715613",
+                "name": "is_active",
                 "presentable": false,
                 "required": false,
                 "system": false,
-                "type": "select",
-                "values": [
-                    "add",
-                    "remove"
-                ]
+                "type": "bool"
+            },
+            {
+                "hidden": false,
+                "id": "bool449995589",
+                "name": "is_terminal",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "bool"
+            },
+            {
+                "hidden": false,
+                "id": "number4113142680",
+                "max": 50,
+                "min": 0,
+                "name": "order",
+                "onlyInt": false,
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "number"
+            },
+            {
+                "hidden": false,
+                "id": "autodate2990389176",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            },
+            {
+                "hidden": false,
+                "id": "autodate3332085495",
+                "name": "updated",
+                "onCreate": true,
+                "onUpdate": true,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [],
+        "system": false
+    },
+    {
+        "id": "pbc_2005704172",
+        "listRule": "",
+        "viewRule": "",
+        "createRule": "",
+        "updateRule": null,
+        "deleteRule": null,
+        "name": "status_tracked",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "cascadeDelete": false,
+                "collectionId": "pbc_823787363",
+                "hidden": false,
+                "id": "relation370448595",
+                "maxSelect": 1,
+                "minSelect": 0,
+                "name": "card",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "relation"
+            },
+            {
+                "cascadeDelete": false,
+                "collectionId": "_pb_users_auth_",
+                "hidden": false,
+                "id": "relation2375276105",
+                "maxSelect": 1,
+                "minSelect": 0,
+                "name": "user",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "relation"
+            },
+            {
+                "cascadeDelete": false,
+                "collectionId": "pbc_1276319826",
+                "hidden": false,
+                "id": "relation2063623452",
+                "maxSelect": 1,
+                "minSelect": 0,
+                "name": "value",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "relation"
             },
             {
                 "hidden": false,
@@ -1512,6 +1705,81 @@
         "system": false
     },
     {
+        "id": "pbc_629915663",
+        "listRule": "",
+        "viewRule": "",
+        "createRule": null,
+        "updateRule": null,
+        "deleteRule": null,
+        "name": "workflow",
+        "type": "base",
+        "fields": [
+            {
+                "autogeneratePattern": "[a-z0-9]{15}",
+                "hidden": false,
+                "id": "text3208210256",
+                "max": 15,
+                "min": 15,
+                "name": "id",
+                "pattern": "^[a-z0-9]+$",
+                "presentable": false,
+                "primaryKey": true,
+                "required": true,
+                "system": true,
+                "type": "text"
+            },
+            {
+                "autogeneratePattern": "",
+                "hidden": false,
+                "id": "text1579384326",
+                "max": 0,
+                "min": 0,
+                "name": "name",
+                "pattern": "",
+                "presentable": false,
+                "primaryKey": false,
+                "required": false,
+                "system": false,
+                "type": "text"
+            },
+            {
+                "cascadeDelete": false,
+                "collectionId": "pbc_1276319826",
+                "hidden": false,
+                "id": "relation1274027537",
+                "maxSelect": 999,
+                "minSelect": 0,
+                "name": "statuses",
+                "presentable": false,
+                "required": false,
+                "system": false,
+                "type": "relation"
+            },
+            {
+                "hidden": false,
+                "id": "autodate2990389176",
+                "name": "created",
+                "onCreate": true,
+                "onUpdate": false,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            },
+            {
+                "hidden": false,
+                "id": "autodate3332085495",
+                "name": "updated",
+                "onCreate": true,
+                "onUpdate": true,
+                "presentable": false,
+                "system": false,
+                "type": "autodate"
+            }
+        ],
+        "indexes": [],
+        "system": false
+    },
+    {
         "id": "pbc_3396498730",
         "listRule": "",
         "viewRule": "",
@@ -1539,10 +1807,10 @@
                 "cascadeDelete": false,
                 "collectionId": "pbc_823787363",
                 "hidden": false,
-                "id": "relation1254922784",
+                "id": "relation370448595",
                 "maxSelect": 1,
                 "minSelect": 0,
-                "name": "card_id",
+                "name": "card",
                 "presentable": false,
                 "required": false,
                 "system": false,
@@ -1551,7 +1819,7 @@
             {
                 "autogeneratePattern": "",
                 "hidden": false,
-                "id": "_clone_lsWl",
+                "id": "_clone_XvNt",
                 "max": 0,
                 "min": 0,
                 "name": "title",
@@ -1565,7 +1833,7 @@
             {
                 "autogeneratePattern": "",
                 "hidden": false,
-                "id": "_clone_IPQ3",
+                "id": "_clone_69gB",
                 "max": 0,
                 "min": 0,
                 "name": "body",
@@ -1579,7 +1847,7 @@
             {
                 "autogeneratePattern": "",
                 "hidden": false,
-                "id": "_clone_N2Fp",
+                "id": "_clone_59LJ",
                 "max": 0,
                 "min": 0,
                 "name": "category",
@@ -1592,7 +1860,7 @@
             },
             {
                 "hidden": false,
-                "id": "_clone_vNts",
+                "id": "_clone_qiBd",
                 "max": null,
                 "min": null,
                 "name": "priority",
@@ -1605,7 +1873,7 @@
             {
                 "autogeneratePattern": "",
                 "hidden": false,
-                "id": "_clone_16kY",
+                "id": "_clone_ucrZ",
                 "max": 0,
                 "min": 0,
                 "name": "status",
@@ -1619,6 +1887,6 @@
         ],
         "indexes": [],
         "system": false,
-        "viewQuery": "SELECT \n    (ROW_NUMBER() OVER(ORDER BY c.id)) AS id,   -- universal ID\n    c.id AS card_id,\n    t.value AS title,\n    b.value AS body,\n    cc.name AS category,\n    p.value AS priority,\n    s.value AS status\nFROM card c\n\n-- Latest title\nLEFT JOIN (\n    SELECT card, MAX(created) AS max_created_at\n    FROM title_tracked\n    GROUP BY card\n) lt ON lt.card = c.id\nLEFT JOIN title_tracked t\n  ON t.card = lt.card\n AND t.created = lt.max_created_at\n\n-- Latest body\nLEFT JOIN (\n    SELECT card, MAX(created) AS max_created_at\n    FROM body_tracked\n    GROUP BY card\n) lb ON lb.card = c.id\nLEFT JOIN body_tracked b\n  ON b.card = lb.card\n AND b.created = lb.max_created_at\n\n-- Latest category\nLEFT JOIN (\n    SELECT card, MAX(created) AS max_created_at\n    FROM category_tracked\n    GROUP BY card\n) lc ON lc.card = c.id\nLEFT JOIN category_tracked cat\n  ON cat.card = lc.card\n AND cat.created = lc.max_created_at\nLEFT JOIN category cc ON cc.id = cat.value\n\n-- Latest priority\nLEFT JOIN (\n    SELECT card, MAX(created) AS max_created_at\n    FROM priority_tracked\n    GROUP BY card\n) lp ON lp.card = c.id\nLEFT JOIN priority_tracked p\n  ON p.card = lp.card\n AND p.created = lp.max_created_at\n\n-- Latest status\nLEFT JOIN (\n    SELECT card, MAX(created) AS max_created_at\n    FROM status_tracked\n    GROUP BY card\n) ls ON ls.card = c.id\nLEFT JOIN status_tracked s\n  ON s.card = ls.card\n AND s.created = ls.max_created_at;\n"
+        "viewQuery": "SELECT \n    (ROW_NUMBER() OVER(ORDER BY c.id)) AS id,   -- universal ID\n    c.id AS card,\n    t.value AS title,\n    b.value AS body,\n    cc.name AS category,\n    p.value AS priority,\n    ss.name AS status\nFROM card c\n\n-- Latest title\nLEFT JOIN (\n    SELECT card, MAX(created) AS max_created_at\n    FROM title_tracked\n    GROUP BY card\n) lt ON lt.card = c.id\nLEFT JOIN title_tracked t\n  ON t.card = lt.card\n AND t.created = lt.max_created_at\n\n-- Latest body\nLEFT JOIN (\n    SELECT card, MAX(created) AS max_created_at\n    FROM body_tracked\n    GROUP BY card\n) lb ON lb.card = c.id\nLEFT JOIN body_tracked b\n  ON b.card = lb.card\n AND b.created = lb.max_created_at\n\n-- Latest category\nLEFT JOIN (\n    SELECT card, MAX(created) AS max_created_at\n    FROM category_tracked\n    GROUP BY card\n) lc ON lc.card = c.id\nLEFT JOIN category_tracked cat\n  ON cat.card = lc.card\n AND cat.created = lc.max_created_at\nLEFT JOIN category cc ON cc.id = cat.value\n\n-- Latest priority\nLEFT JOIN (\n    SELECT card, MAX(created) AS max_created_at\n    FROM priority_tracked\n    GROUP BY card\n) lp ON lp.card = c.id\nLEFT JOIN priority_tracked p\n  ON p.card = lp.card\n AND p.created = lp.max_created_at\n\n-- Latest status\nLEFT JOIN (\n    SELECT card, MAX(created) AS max_created_at\n    FROM status_tracked\n    GROUP BY card\n) ls ON ls.card = c.id\nLEFT JOIN status_tracked s\n  ON s.card = ls.card\n AND s.created = ls.max_created_at\nLEFT JOIN status ss ON ss.id = s.value;\n\n"
     }
 ]

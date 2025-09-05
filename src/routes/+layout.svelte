@@ -59,11 +59,10 @@
 			<slot />
 		</div>
 	</main>
-	<Footer class="">
-		<FooterLinkGroup ulClass="">
-			<FooterLink href="/">Home</FooterLink>
-			<FooterLink href="/about">About</FooterLink>
-			<FooterLink href="/terms">Terms of Service</FooterLink>
+	<Footer class="flex justify-center">
+		<FooterLinkGroup ulClass="flex">
+			<FooterLink href="/">/</FooterLink>
+			<FooterLink href="/login">Login</FooterLink>
 		</FooterLinkGroup>
 	</Footer>
 </div>

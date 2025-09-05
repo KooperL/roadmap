@@ -1,3 +1,4 @@
+import { hashCode } from '$lib/utils';
 import {
 	cardsState,
 	cardState,
@@ -55,7 +56,7 @@ export const getCard = async (cardId: string) => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const [card, title, body, category, priority, status] = await Promise.all([
+		const [card, title, body, category, priority, status, meta, comment] = await Promise.all([
 			pb.collection('card').getOne(cardId),
 			pb.collection('title_tracked').getFirstListItem(`card = "${cardId}"`, { sort: '-created' }),
 			pb.collection('body_tracked').getFirstListItem(`card = "${cardId}"`, { sort: '-created' }),
@@ -65,11 +66,25 @@ export const getCard = async (cardId: string) => {
 			pb
 				.collection('priority_tracked')
 				.getFirstListItem(`card = "${cardId}"`, { sort: '-created' }),
-			pb.collection('status_tracked').getFirstListItem(`card = "${cardId}"`, { sort: '-created' })
+			pb.collection('status_tracked').getFirstListItem(`card = "${cardId}"`, { sort: '-created', expand: 'value'  }),
+			pb.collection('meta_tracked').getFullList({ sort: '-created', filter: `card = "${cardId}"` }),
+			pb.collection('comment_tracked').getFullList({ sort: '-created', filter: `card = "${cardId}"`, expand: 'user' })
 		]);
 
-    console.log(title)
-    console.log(category)
+    let tagsObj = {}
+    meta.forEach(row => {
+      if (row.type === 'label') return
+      if (row.action === 'add') tagsObj[row.value] = true
+      if (row.action === 'remove') delete tagsObj[row.value]
+    })
+
+    // No duplicate comments lol someone tell stack overflow mods about this tech
+    let commentsObj = {}
+    comment.forEach(row => {
+      const hash = hashCode(row.value)
+      if (row.action === 'add') commentsObj[hash] = row
+      if (row.action === 'remove') delete commentsObj[hash]
+    })
 
 		cardState.update((state) => ({
 			errorMessage: undefined,
@@ -81,7 +96,9 @@ export const getCard = async (cardId: string) => {
 				body: body.value,
 				category: category?.expand?.value?.name,
 				priority: priority.value,
-				status: status.value
+				status: status?.expand?.value?.name,
+        tags: Object.keys(tagsObj),
+        comments: Object.values(commentsObj)
 			}
 		}));
 		logger.debug('getCard hook', 'Card fetched');
@@ -137,9 +154,10 @@ export const createCard = async (details: any) => {
 			}),
 			...details.tags.map((tagRaw: any) => {
 				const tag = typeof tagRaw === 'object' ? tagRaw.name : tagRaw;
-				return pb.collection('tag_tracked').create({
+				return pb.collection('meta_tracked').create({
 					card: putCardResult.id,
 					action: 'add',
+          type: 'tag',
 					value: details.title
 				});
 			})
@@ -181,6 +199,7 @@ export const updateCard = async (table: string, cardId: string, value: any, acti
 		const updatedCardResult = await pb.collection(table).create({
 			card: cardId,
 			action: action,
+      ...(table === 'meta_tracked' && {type: 'tag'}),
 			value: value
 		});
 		updateCardState.update((state) => ({
@@ -242,7 +261,7 @@ export const resetDeleteCard = () => {
 	}));
 };
 
-export const cardComment = async (cardId: string, comment: string) => {
+export const cardComment = async (cardId: string, comment: string, action="add") => {
 	try {
 		logger.info('cardComment hook', 'Hook called');
 		commentCreateState.update((state) => ({
@@ -250,9 +269,10 @@ export const cardComment = async (cardId: string, comment: string) => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const commentCreateResult = await pb.collection('comment').create({
+		const commentCreateResult = await pb.collection('comment_tracked').create({
 			card: cardId,
-			body: comment
+			value: comment,
+      action 
 		});
 		commentCreateState.update((state) => ({
 			errorMessage: undefined,
@@ -279,7 +299,7 @@ export const resetCardComment = () => {
 	}));
 };
 
-export const getProjectStatus = async (projectId: string) => {
+export const getProjectStatus = async (workflowId: string) => {
 	try {
 		logger.info('getProjectStatus hook', 'Hook called');
 		projectStatusState.update((state) => ({
@@ -287,23 +307,12 @@ export const getProjectStatus = async (projectId: string) => {
 			errorMessage: undefined,
 			data: undefined
 		}));
+    console.log(workflowId)
+		const pbStatuses = await pb.collection('workflow').getOne(workflowId, {expand: 'statuses'});
 		projectStatusState.update((state) => ({
 			errorMessage: undefined,
 			status: fetchStatus.success,
-			data: [
-				{
-					name: 'TODO',
-					position: 0
-				},
-				{
-					name: 'In progress',
-					position: 1
-				},
-				{
-					name: 'Done',
-					position: 3
-				}
-			]
+			data: pbStatuses.expand!.statuses
 		}));
 		logger.debug('getProjectStatus hook', 'Tenants fetched');
 	} catch (e: any) {
