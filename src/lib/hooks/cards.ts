@@ -1,4 +1,5 @@
 import { hashCode } from '$lib/utils';
+import { get } from 'svelte/store';
 import {
 	cardsState,
 	cardState,
@@ -10,7 +11,7 @@ import {
 	updateCardState
 } from '../app/stores';
 import { logger } from '../logger';
-import { pb } from '../pocketbase';
+import { pb, currentUser } from '../pocketbase';
 
 export const getCards = async (projectId: string) => {
 	try {
@@ -134,31 +135,37 @@ export const createCard = async (details: any) => {
 		await Promise.all([
 			pb.collection('title_tracked').create({
 				card: putCardResult.id,
-				value: details.title
+				value: details.title,
+				user: get(currentUser).record?.id
 			}),
 			pb.collection('body_tracked').create({
 				card: putCardResult.id,
-				value: details.body
+				value: details.body,
+				user: get(currentUser).record?.id
 			}),
 			pb.collection('status_tracked').create({
 				card: putCardResult.id,
-				value: details.status
+				value: details.status,
+				user: get(currentUser).record?.id
 			}),
 			pb.collection('priority_tracked').create({
 				card: putCardResult.id,
-				value: details.priority
+				value: details.priority,
+				user: get(currentUser).record?.id
 			}),
 			pb.collection('category_tracked').create({
 				card: putCardResult.id,
-				value: details.category
+				value: details.category,
+				user: get(currentUser).record?.id
 			}),
 			...details.tags.map((tagRaw: any) => {
 				const tag = typeof tagRaw === 'object' ? tagRaw.name : tagRaw;
 				return pb.collection('meta_tracked').create({
 					card: putCardResult.id,
 					action: 'add',
+					user: get(currentUser).record?.id,
           type: 'tag',
-					value: details.title
+					value: tag
 				});
 			})
 		]);
@@ -200,7 +207,8 @@ export const updateCard = async (table: string, cardId: string, value: any, acti
 			card: cardId,
 			action: action,
       ...(table === 'meta_tracked' && {type: 'tag'}),
-			value: value
+			value: value,
+			user: get(currentUser).record?.id
 		});
 		updateCardState.update((state) => ({
 			errorMessage: undefined,
@@ -272,7 +280,8 @@ export const cardComment = async (cardId: string, comment: string, action="add")
 		const commentCreateResult = await pb.collection('comment_tracked').create({
 			card: cardId,
 			value: comment,
-      action 
+			user: get(currentUser).record?.id,
+      action
 		});
 		commentCreateState.update((state) => ({
 			errorMessage: undefined,

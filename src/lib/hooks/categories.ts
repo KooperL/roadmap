@@ -1,6 +1,7 @@
+import { get } from 'svelte/store';
 import { cardCategoryState, fetchStatus } from '../app/stores';
 import { logger } from '../logger';
-import { pb } from '../pocketbase';
+import { currentUser, pb } from '../pocketbase';
 
 export const getCategories = async () => {
 	try {
@@ -10,9 +11,7 @@ export const getCategories = async () => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const fetchCategoriesResult = await pb.collection('category').getFullList({
-			sort: 'name'
-		});
+		const fetchCategoriesResult = await pb.collection('category').getFullList();
 		cardCategoryState.update((state) => ({
 			errorMessage: undefined,
 			status: fetchStatus.success,
@@ -47,7 +46,8 @@ export const createCategory = async (name: string) => {
 			data: undefined
 		}));
 		const createCategoryResult = await pb.collection('category').create({
-			name: name
+			name: name,
+			user: get(currentUser).record?.id
 		});
 		cardCategoryState.update((state) => ({
 			errorMessage: undefined,

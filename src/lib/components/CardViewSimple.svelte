@@ -11,9 +11,6 @@
 	import { cardState, fetchStatus } from '../app/stores';
 	import { createEventDispatcher } from 'svelte';
 	import TagInput from './TagInput.svelte';
-	import CategorySelector from './CategorySelector.svelte';
-	import StatusSelector from './StatusSelector.svelte';
-	import PrioritySelector from './PrioritySelector.svelte';
 	import { cardPriority, getPriority } from '../config';
 	import TextArea from './TextArea.svelte';
 	import { Textarea, Input, Heading, P } from 'flowbite-svelte';

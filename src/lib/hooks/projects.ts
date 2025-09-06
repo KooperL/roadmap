@@ -28,30 +28,5 @@ export const getProjects = async () => {
 };
 
 export const newProject = async () => {
-	try {
     throw new Error('TODO')
-		logger.info('getTenants hook', 'Hook called');
-		cards.update((state) => ({
-			status: 'loading',
-			errorMessage: undefined,
-			data: undefined
-		}));
-		const pbTenants = await pb.collection('cards').getList(1, 50, {
-			// filter: 'id = "cardId"',
-			expand: 'comments'
-		});
-		cards.update((state) => ({
-			errorMessage: undefined,
-			status: fetchStatus.success,
-			data: pbTenants.items
-		}));
-		logger.debug('getTenants hook', 'Tenants fetched');
-	} catch (e: any) {
-		logger.error('getTenants hook', e.message);
-		cardsState.update((state) => ({
-			status: fetchStatus.error,
-			data: undefined,
-			errorMessage: e.message
-		}));
-	}
 };
