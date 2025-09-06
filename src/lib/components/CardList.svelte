@@ -2,9 +2,6 @@
 	import { onMount } from 'svelte';
 	import { getCard, getCards, getProjectStatus, resetGetCard, updateCard } from '$lib/hooks/cards';
 	import { fetchStatus, cardsState, projectStatusState, cardState, projectsState } from '$lib/app/stores';
-	import CardEditor from '$lib/components/CardCreator.svelte';
-	import CardView from '$lib/components/CardView.svelte';
-	import LandCard from '$lib/components/LandCard.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import { PlusOutline } from 'flowbite-svelte-icons';
 	import { getProjects } from '$lib/hooks/projects';
@@ -46,6 +43,13 @@
 		<!-- p class="">Error pulling the cards: {$cardsState.errorMessage}</p-->
 	{:else}
 
+<div class="mb-4 flex justify-between items-center">
+	<h2 class="text-2xl font-bold text-gray-900 dark:text-white">Cards</h2>
+	<Button click={() => goto('/cards/create')} className="bg-blue-600 hover:bg-blue-700">
+		<PlusOutline class="w-4 h-4 mr-2" />
+		Create Card
+	</Button>
+</div>
 
 <Table>
   <TableHead>

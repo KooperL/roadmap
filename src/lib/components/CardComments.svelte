@@ -11,9 +11,6 @@
 	import { cardState, fetchStatus } from '../app/stores';
 	import { createEventDispatcher } from 'svelte';
 	import TagInput from './TagInput.svelte';
-	import CategorySelector from './CategorySelector.svelte';
-	import StatusSelector from './StatusSelector.svelte';
-	import PrioritySelector from './PrioritySelector.svelte';
 	import { cardPriority } from '../config';
 	import TextArea from './TextArea.svelte';
 	import { Textarea, Input, Heading, P } from 'flowbite-svelte';
@@ -51,6 +48,6 @@
 							</div>
 						{/each}
 					{:else}
-						<div class="">No comments yet.</div>
+						<div class="text-gray-500 italic w-full flex justify-center pt-2">No comments yet.</div>
 					{/if}
 				</div>

@@ -3,18 +3,18 @@
 	import CardViewSimple from "$lib/components/CardViewSimple.svelte";
   import { onMount } from "svelte"
 
-  let route = undefined
+  let route: string | undefined = undefined
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    route = urlParams.get('cardId');
+    if (urlParams.has('cardId')) {
+      route = urlParams.get('cardId');
+    }
   })
 
 </script>
 
 {#if route === undefined}
-  Loading
-{:else if [null, false, 'Forgive me lord'].includes(route)}
-  <CardList />
+  Card not found
 {:else}
   <CardViewSimple cardId={route} />
 {/if}
