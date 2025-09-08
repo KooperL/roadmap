@@ -14,7 +14,7 @@
 	import { cardPriority, getPriority } from '../config';
 	import TextArea from './TextArea.svelte';
 	import { Textarea, Input, Heading, P } from 'flowbite-svelte';
-	import { ClockSolid, FloppyDiskOutline, PenOutline } from 'flowbite-svelte-icons';
+	import { ClockSolid, FloppyDiskOutline, PenOutline, EditOutline } from 'flowbite-svelte-icons';
 	import Chip from './Chip.svelte';
 	import Button from './Button.svelte';
 	import moment from 'moment';
@@ -84,9 +84,18 @@
 			</div>
 
 			<div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-				<Heading tag="h1" class="text-3xl font-bold text-gray-900 dark:text-white leading-tight">
-					{$cardState.data.title}
-				</Heading>
+				<div class="flex items-center justify-between">
+					<Heading tag="h1" class="text-3xl font-bold text-gray-900 dark:text-white leading-tight">
+						{$cardState.data.title}
+					</Heading>
+					<Button 
+						click={() => window.location.assign(`/update?cardId=${cardId}`)}
+						className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+					>
+						<EditOutline class="h-4 w-4" />
+						<span>Edit</span>
+					</Button>
+				</div>
 			</div>
 
 			<div class="px-6 py-6">
@@ -101,9 +110,9 @@
 
 				{#if $cardState.data.tags && $cardState.data.tags.length > 0}
 					<div class="mb-6">
-						<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+						<div class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
 							Tags
-						</label>
+						</div>
 						<div class="flex flex-wrap gap-2">
 							{#each $cardState.data.tags as tag}
 								<Chip 
