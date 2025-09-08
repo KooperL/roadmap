@@ -3,16 +3,16 @@
 	import { goto } from '$app/navigation';
 	import { getCard, updateCard, getProjectStatus, resetGetCard } from '$lib/hooks/cards';
 	import { getCategories } from '$lib/hooks/categories';
-	import { 
-		cardState, 
-		cardCategoryState, 
-		projectStatusState, 
-		projectsState, 
-		fetchStatus, 
+	import {
+		cardState,
+		cardCategoryState,
+		projectStatusState,
+		projectsState,
+		fetchStatus,
 		toast,
-		updateCardState 
+		updateCardState
 	} from '$lib/app/stores';
-	import { Label, Select, Input, Textarea, Button } from "flowbite-svelte";
+	import { Label, Select, Input, Textarea, Button } from 'flowbite-svelte';
 	import { getProjects } from '$lib/hooks/projects';
 
 	let categoriesList: { value: string; name: string }[] = [];
@@ -41,7 +41,7 @@
 	onMount(async () => {
 		const urlParams = new URLSearchParams(window.location.search);
 		cardId = urlParams.get('cardId') || '';
-		
+
 		if (!cardId) {
 			toast.set({ text: 'No card ID provided', icon: 'error' });
 			goto('/');
@@ -54,33 +54,32 @@
 		if ($cardCategoryState.status !== fetchStatus.success) {
 			await getCategories();
 		}
-		if ($projectStatusState.status !== fetchStatus.success) {
-			await getProjectStatus($projectsState.data?.[0]?.workflow);
-		}
 
 		await getCard(cardId);
 
 		categoriesList = $cardCategoryState.data.map((cat: any) => ({ value: cat.id, name: cat.name }));
-		statusList = $projectStatusState.data.map((stat: any) => ({ value: stat.id, name: stat.name }));
+		statusList = $projectsState.data.items[0].expand.workflow.expand.statuses.map((stat: any) => ({
+			value: stat.id,
+			name: stat.name
+		}));
 
-        if ($cardState.status === fetchStatus.success && $cardState.data) {
-		const card = $cardState.data;
-		title = card.title || '';
-		body = card.body || '';
-		category = categoriesList.find(cat => cat.name === card.category)?.value || '';
-		priority = card.priority || '';
-		status = statusList.find(stat => stat.name === card.status)?.value || '';
-		tags = card.tags ? card.tags.join(', ') : '';
-		
-		originalTitle = title;
-		originalBody = body;
-		originalCategory = category;
-		originalPriority = priority;
-		originalStatus = status;
-		originalTags = tags;
-	}
+		if ($cardState.status === fetchStatus.success && $cardState.data) {
+			const card = $cardState.data;
+			title = card.title || '';
+			body = card.body || '';
+			category = categoriesList.find((cat) => cat.name === card.category)?.value || '';
+			priority = card.priority || '';
+			status = statusList.find((stat) => stat.name === card.status)?.value || '';
+			tags = card.tags ? card.tags.join(', ') : '';
+
+			originalTitle = title;
+			originalBody = body;
+			originalCategory = category;
+			originalPriority = priority;
+			originalStatus = status;
+			originalTags = tags;
+		}
 	});
-
 
 	async function handleSubmit() {
 		if (!cardId) {
@@ -110,15 +109,21 @@
 			}
 
 			if (tags !== originalTags) {
-				const newTags = tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
-				const oldTags = originalTags.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
-				
+				const newTags = tags
+					.split(',')
+					.map((tag) => tag.trim())
+					.filter((tag) => tag !== '');
+				const oldTags = originalTags
+					.split(',')
+					.map((tag) => tag.trim())
+					.filter((tag) => tag !== '');
+
 				for (const tag of oldTags) {
 					if (!newTags.includes(tag)) {
 						await updateCard('meta_tracked', cardId, tag, 'remove');
 					}
 				}
-				
+
 				for (const tag of newTags) {
 					if (!oldTags.includes(tag)) {
 						await updateCard('meta_tracked', cardId, tag, 'add');
@@ -128,7 +133,6 @@
 
 			toast.set({ text: 'Card updated successfully!', icon: 'success' });
 			goto(`/cards?cardId=${cardId}`);
-			
 		} catch (error) {
 			console.error('Error updating card:', error);
 			toast.set({ text: 'Failed to update card', icon: 'error' });
@@ -139,12 +143,13 @@
 		goto(`/cards?cardId=${cardId}`);
 	}
 
-	$: hasChanges = title !== originalTitle || 
-					body !== originalBody || 
-					category !== originalCategory || 
-					priority !== originalPriority || 
-					status !== originalStatus || 
-					tags !== originalTags;
+	$: hasChanges =
+		title !== originalTitle ||
+		body !== originalBody ||
+		category !== originalCategory ||
+		priority !== originalPriority ||
+		status !== originalStatus ||
+		tags !== originalTags;
 </script>
 
 <svelte:head>
@@ -158,18 +163,18 @@
 	</div>
 
 	{#if $cardState.status === fetchStatus.loading || $cardState.status === fetchStatus.idle}
-		<div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 animate-pulse">
+		<div class="animate-pulse rounded-lg bg-white p-8 shadow-md dark:bg-gray-800">
 			<div class="flex items-center justify-center space-x-2">
-				<div class="w-6 h-6 bg-gray-300 dark:bg-gray-600 rounded-full animate-spin"></div>
-				<p class="text-gray-600 dark:text-gray-300 text-lg">Loading card...</p>
+				<div class="h-6 w-6 animate-spin rounded-full bg-gray-300 dark:bg-gray-600"></div>
+				<p class="text-lg text-gray-600 dark:text-gray-300">Loading card...</p>
 			</div>
 		</div>
 	{:else if $cardState.status === fetchStatus.error}
-		<div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+		<div
+			class="rounded-lg border border-red-200 bg-red-50 p-6 dark:border-red-800 dark:bg-red-900/20"
+		>
 			<p class="text-red-700 dark:text-red-300">Error loading card: {$cardState.errorMessage}</p>
-			<Button class="mt-4" on:click={() => goto('/')}>
-				Go Back Home
-			</Button>
+			<Button class="mt-4" on:click={() => goto('/')}>Go Back Home</Button>
 		</div>
 	{:else if $cardState.status === fetchStatus.success}
 		<form class="space-y-6" on:submit|preventDefault={handleSubmit}>
@@ -210,9 +215,9 @@
 
 				<div>
 					<Label for="status" class="mb-2">Status *</Label>
-					{#if $projectStatusState.status === fetchStatus.loading}
+					{#if $projectsState.status === fetchStatus.loading}
 						<div class="text-sm text-gray-500">Loading statuses...</div>
-					{:else if $projectStatusState.status === fetchStatus.success}
+					{:else if $projectsState.status === fetchStatus.success}
 						<Select class="mt-2" items={statusList} bind:value={status} />
 					{:else}
 						<div class="text-sm text-gray-500">No statuses available</div>
@@ -237,14 +242,14 @@
 				<Button
 					type="button"
 					on:click={handleCancel}
-					class="order-2 sm:order-1 bg-gray-500 hover:bg-gray-600"
+					class="order-2 bg-gray-500 hover:bg-gray-600 sm:order-1"
 				>
 					Cancel
 				</Button>
 				<Button
 					type="submit"
 					disabled={!hasChanges || $updateCardState.status === fetchStatus.loading}
-					class="order-1 sm:order-2 {!hasChanges ? 'opacity-50 cursor-not-allowed' : ''}"
+					class="order-1 sm:order-2 {!hasChanges ? 'cursor-not-allowed opacity-50' : ''}"
 				>
 					{#if $updateCardState.status === fetchStatus.loading}
 						Updating...
@@ -255,7 +260,7 @@
 			</div>
 
 			{#if !hasChanges}
-				<p class="text-sm text-gray-500 text-center">No changes to save</p>
+				<p class="text-center text-sm text-gray-500">No changes to save</p>
 			{/if}
 		</form>
 	{/if}
@@ -267,8 +272,8 @@
 	</div>
 {/if}
 
-{#if $projectStatusState.status === fetchStatus.error}
+{#if $projectsState.status === fetchStatus.error}
 	<div class="mt-4 rounded-lg bg-red-50 p-4 text-red-700 dark:bg-red-900 dark:text-red-200">
-		Error loading statuses: {$projectStatusState.errorMessage}
+		Error loading statuses: {$projectsState.errorMessage}
 	</div>
 {/if}

@@ -10,7 +10,9 @@ export const getProjects = async () => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const pbTenants = await pb.collection('project').getFullList();
+		const pbTenants = await pb
+			.collection('project')
+			.getFullList({ expand: 'workflow, workflow.statuses' });
 		projectsState.update((state) => ({
 			errorMessage: undefined,
 			status: fetchStatus.success,
@@ -25,8 +27,4 @@ export const getProjects = async () => {
 			errorMessage: e.message
 		}));
 	}
-};
-
-export const newProject = async () => {
-    throw new Error('TODO')
 };

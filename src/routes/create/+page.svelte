@@ -3,43 +3,46 @@
 	import { goto } from '$app/navigation';
 	import { createCard, getProjectStatus, resetCreateCard } from '$lib/hooks/cards';
 	import { getCategories, resetGetCategories } from '$lib/hooks/categories';
-	import { createCardState, cardCategoryState, projectStatusState, projectsState, fetchStatus, toast } from '$lib/app/stores';
-  import { Label, Select, Input, Textarea, Button } from "flowbite-svelte";
+	import {
+		createCardState,
+		cardCategoryState,
+		projectsState,
+		fetchStatus,
+		toast
+	} from '$lib/app/stores';
+	import { Label, Select, Input, Textarea, Button } from 'flowbite-svelte';
 	import { getProjects } from '$lib/hooks/projects';
 
-  let categoriesList: { value: string; name: string }[] = [];
-  let statusList: { value: string; name: string }[] = [];
-  let priorityList = [
-    { value: 3, name: 'Low' },
-    { value: 4, name: 'Medium' },
-    { value: 6, name: 'High' },
-    { value: 8, name: 'Critical' }
-  ];
+	let categoriesList: { value: string; name: string }[] = [];
+	let statusList: { value: string; name: string }[] = [];
+	let priorityList = [
+		{ value: 3, name: 'Low' },
+		{ value: 4, name: 'Medium' },
+		{ value: 6, name: 'High' },
+		{ value: 8, name: 'Critical' }
+	];
 
-
-    let title = '';
+	let title = '';
 	let body = '';
 	let category = '';
 	let priority = 'medium';
 	let status = '';
 	let tags = '';
 
-    onMount(async () => {
-        if ($projectsState.status !== fetchStatus.success) {
-            await getProjects();
-        }
-        if ($cardCategoryState.status !== fetchStatus.success) {
-            await getCategories();
-        }
-        if ($projectStatusState.status !== fetchStatus.success) {
-            await getProjectStatus($projectsState.data?.[0]?.workflow);
-        }
-        console.log($cardCategoryState)
+	onMount(async () => {
+		if ($projectsState.status !== fetchStatus.success) {
+			await getProjects();
+		}
+		if ($cardCategoryState.status !== fetchStatus.success) {
+			await getCategories();
+		}
 
-        categoriesList = $cardCategoryState.data.map(cat => ({ value: cat.id, name: cat.name }));
-        statusList = $projectStatusState.data.map(stat => ({ value: stat.id, name: stat.name }));
-
-    });
+		categoriesList = $cardCategoryState.data.map((cat) => ({ value: cat.id, name: cat.name }));
+		statusList = $projectsState.data.items[0].expand.workflow.expand.statuses.map((stat) => ({
+			value: stat.id,
+			name: stat.name
+		}));
+	});
 
 	async function handleSubmit() {
 		if (false) {
@@ -53,7 +56,10 @@
 			category,
 			priority,
 			status,
-			tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag !== ''),
+			tags: tags
+				.split(',')
+				.map((tag) => tag.trim())
+				.filter((tag) => tag !== '')
 		};
 
 		await createCard(cardDetails);
@@ -78,7 +84,9 @@
 <div class="container mx-auto max-w-2xl p-4">
 	<div class="mb-6">
 		<h1 class="text-3xl font-bold text-gray-900 dark:text-white">Create New Card</h1>
-		<p class="mt-2 text-gray-600 dark:text-gray-400">Fill in the details to create a new roadmap card</p>
+		<p class="mt-2 text-gray-600 dark:text-gray-400">
+			Fill in the details to create a new roadmap card
+		</p>
 	</div>
 
 	<form class="space-y-6">
@@ -119,19 +127,19 @@
 
 			<div>
 				<Label for="status" class="mb-2">Status *</Label>
-                {#if $projectStatusState.status === fetchStatus.loading}
-                    <div class="text-sm text-gray-500">Loading statuses...</div>
-                {:else if $projectStatusState.status === fetchStatus.success}
-                    <Select class="mt-2" items={statusList} bind:value={status} />
-                {:else}
-                    <div class="text-sm text-gray-500">No statuses available</div>
-                {/if}
+				{#if $projectsState.status === fetchStatus.loading}
+					<div class="text-sm text-gray-500">Loading statuses...</div>
+				{:else if $projectsState.status === fetchStatus.success}
+					<Select class="mt-2" items={statusList} bind:value={status} />
+				{:else}
+					<div class="text-sm text-gray-500">No statuses available</div>
+				{/if}
 			</div>
 		</div>
 
 		<div>
 			<Label for="priority" class="mb-2">Priority</Label>
-            <Select class="mt-2" items={priorityList} bind:value={priority} />
+			<Select class="mt-2" items={priorityList} bind:value={priority} />
 		</div>
 
 		<div>
@@ -146,15 +154,11 @@
 			<Button
 				type="button"
 				on:click={handleCancel}
-				class="order-2 sm:order-1 bg-gray-500 hover:bg-gray-600"
+				class="order-2 bg-gray-500 hover:bg-gray-600 sm:order-1"
 			>
 				Cancel
 			</Button>
-			<Button
-				type="submit"
-				on:click={handleSubmit}
-				class="order-1 sm:order-2"
-			>
+			<Button type="submit" on:click={handleSubmit} class="order-1 sm:order-2">
 				{#if $createCardState.status === fetchStatus.loading}
 					Creating...
 				{:else}

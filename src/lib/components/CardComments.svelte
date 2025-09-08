@@ -19,35 +19,34 @@
 	import Button from './Button.svelte';
 	import moment from 'moment';
 
-  let commentDraft = '';
+	let commentDraft = '';
 
 	async function handleCommentSubmit() {
-    const cardId = $cardState.data.id
+		const cardId = $cardState.data.id;
 		await cardComment(cardId, commentDraft);
 		commentDraft = '';
 		await getCard(cardId);
 	}
-    console.log($cardState.data)
+	console.log($cardState.data);
 </script>
-				<div class="flex gap-2">
-					<Input
-						placeholder="Is there anything you'd like to add?"
-						bind:value={commentDraft}
-						class=""
-					/>
-					<Button class="" click={handleCommentSubmit} disabled={!commentDraft.trim()}>Post</Button>
-				</div>
-				<div class="flex flex-col gap-2">
-					{#if $cardState.data?.comments?.length}
-						{#each $cardState.data.comments as commentObject}
-							<div class="">
-								<P size="xs" class="text-gray-700 dark:text-gray-500"
-									>{commentObject?.expand?.user?.username ?? 'Someone'} - {moment(commentObject.created).fromNow()}</P
-								>
-								<P size="">{commentObject.value}</P>
-							</div>
-						{/each}
-					{:else}
-						<div class="text-gray-500 italic w-full flex justify-center pt-2">No comments yet.</div>
-					{/if}
-				</div>
+
+<div class="flex gap-2">
+	<Input placeholder="Is there anything you'd like to add?" bind:value={commentDraft} class="" />
+	<Button class="" click={handleCommentSubmit} disabled={!commentDraft.trim()}>Post</Button>
+</div>
+<div class="flex flex-col gap-2">
+	{#if $cardState.data?.comments?.length}
+		{#each $cardState.data.comments as commentObject}
+			<div class="">
+				<P size="xs" class="text-gray-700 dark:text-gray-500"
+					>{commentObject?.expand?.user?.username ?? 'Someone'} - {moment(
+						commentObject.created
+					).fromNow()}</P
+				>
+				<P size="">{commentObject.value}</P>
+			</div>
+		{/each}
+	{:else}
+		<div class="flex w-full justify-center pt-2 italic text-gray-500">No comments yet.</div>
+	{/if}
+</div>

@@ -12,7 +12,7 @@
 		DarkMode,
 		Checkbox
 	} from 'flowbite-svelte';
-	import { UserCircleOutline } from 'flowbite-svelte-icons';
+	import { PlusOutline, UserCircleOutline } from 'flowbite-svelte-icons';
 	import { pb, currentUser } from '../pocketbase';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
@@ -30,18 +30,21 @@
 </script>
 
 <Navbar>
-	<div class="flex justify-between gap-4 w-full">
+	<div class="flex w-full justify-between gap-4">
 		<NavBrand href="/">
 			<span
 				class="self-center whitespace-nowrap pr-2 text-8xl text-xl font-bold font-semibold text-primary-700 dark:text-white"
 				>Roadmap</span
 			>
 		</NavBrand>
-      {#if $currentUser?.model?.id}
-		<NavBrand href="/">
-			<span class="hidden self-center whitespace-nowrap sm:block dark:text-white">Logged in</span>
-		</NavBrand>
-{/if}
+		{#if $currentUser?.model?.id}
+			<NavBrand href="/">
+				<Button on:click={() => goto('/cards/create')} class="bg-blue-600 hover:bg-blue-700">
+					<PlusOutline class="mr-2 h-4 w-4" />
+					Create
+				</Button>
+			</NavBrand>
+		{/if}
 	</div>
 </Navbar>
 

@@ -29,7 +29,7 @@
 
 <div class="rounded px-8 py-6 text-left shadow-lg dark:bg-gray-100">
 	<h3 class="text-center text-2xl font-bold">Login to your account</h3>
-  <p class="text-center">
+	<p class="text-center">
 		Don't have an account? <a class="text-primary-700" href="/register">Register</a>
 	</p>
 	<form on:submit|preventDefault class="mt-4">
