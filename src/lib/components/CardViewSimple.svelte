@@ -25,43 +25,52 @@
 
 	onMount(async () => {
 		if ($cardState.status != fetchStatus.success || $cardState.data.id !== cardId) {
-		  await getCard(cardId);
+			await getCard(cardId);
 		}
 	});
-
 
 	async function handleDelete() {
 		await deleteCard(cardId);
 		resetGetCards();
 	}
-
 </script>
 
-<div class="max-w-4xl mx-auto p-6">
+<div class="mx-auto max-w-4xl p-6">
 	{#if $cardState.status === fetchStatus.loading || $cardState.status === fetchStatus.idle}
-		<div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 animate-pulse">
+		<div class="animate-pulse rounded-lg bg-white p-8 shadow-md dark:bg-gray-800">
 			<div class="flex items-center justify-center space-x-2">
-				<div class="w-6 h-6 bg-gray-300 dark:bg-gray-600 rounded-full animate-spin"></div>
-				<p class="text-gray-600 dark:text-gray-300 text-lg">Loading card...</p>
+				<div class="h-6 w-6 animate-spin rounded-full bg-gray-300 dark:bg-gray-600"></div>
+				<p class="text-lg text-gray-600 dark:text-gray-300">Loading card...</p>
 			</div>
 		</div>
 	{:else if $cardState.status === fetchStatus.error}
-		<div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+		<div
+			class="rounded-lg border border-red-200 bg-red-50 p-6 dark:border-red-800 dark:bg-red-900/20"
+		>
 			<div class="flex items-center space-x-3">
 				<div class="flex-shrink-0">
 					<svg class="h-6 w-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+						/>
 					</svg>
 				</div>
 				<div>
 					<h3 class="text-sm font-medium text-red-800 dark:text-red-200">Error loading card</h3>
-					<p class="text-sm text-red-600 dark:text-red-400 mt-1">{$cardState.errorMessage}</p>
+					<p class="mt-1 text-sm text-red-600 dark:text-red-400">{$cardState.errorMessage}</p>
 				</div>
 			</div>
 		</div>
 	{:else if $cardState.data}
-		<div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-			<div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 px-6 py-4">
+		<div
+			class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800"
+		>
+			<div
+				class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 dark:from-gray-700 dark:to-gray-600"
+			>
 				<div class="flex flex-wrap items-center justify-between gap-3">
 					<div class="flex items-center space-x-3">
 						<Chip rounded color="gray" className="bg-white">
@@ -83,12 +92,12 @@
 				</div>
 			</div>
 
-			<div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+			<div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
 				<div class="flex items-center justify-between">
-					<Heading tag="h1" class="text-3xl font-bold text-gray-900 dark:text-white leading-tight">
+					<Heading tag="h1" class="text-3xl font-bold leading-tight text-gray-900 dark:text-white">
 						{$cardState.data.title}
 					</Heading>
-					<Button 
+					<Button
 						click={() => window.location.assign(`/update?cardId=${cardId}`)}
 						className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
 					>
@@ -100,24 +109,22 @@
 
 			<div class="px-6 py-6">
 				<div class="mb-6">
-					<Textarea 
-						disabled 
-						bind:value={$cardState.data.body} 
-						class="min-h-32 resize-none bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-400 dark:focus:border-blue-400"
+					<Textarea
+						disabled
+						bind:value={$cardState.data.body}
+						class="min-h-32 resize-none border-gray-300 bg-gray-50 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:focus:border-blue-400 dark:focus:ring-blue-400"
 						placeholder="No description available..."
 					/>
 				</div>
 
 				{#if $cardState.data.tags && $cardState.data.tags.length > 0}
 					<div class="mb-6">
-						<div class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-							Tags
-						</div>
+						<div class="mb-3 block text-sm font-medium text-gray-700 dark:text-gray-300">Tags</div>
 						<div class="flex flex-wrap gap-2">
 							{#each $cardState.data.tags as tag}
-								<Chip 
-									rounded 
-									color="indigo" 
+								<Chip
+									rounded
+									color="indigo"
 									className="px-3 py-1 text-sm font-medium transition-all duration-200 hover:shadow-md transform hover:-translate-y-0.5"
 								>
 									{typeof tag === 'object' ? tag.name : tag}
@@ -127,11 +134,10 @@
 					</div>
 				{/if}
 			</div>
-      <hr />
-      <div class="p-4">
-      <CardComments />
-
-	</div>
-	</div>
-			{/if}
-	</div>
+			<hr />
+			<div class="p-4">
+				<CardComments />
+			</div>
+		</div>
+	{/if}
+</div>

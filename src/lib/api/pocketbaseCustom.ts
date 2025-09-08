@@ -31,13 +31,13 @@ export async function fetchCustomEndpoint(
 
 		let path = endpoint.toString();
 		if (data.url) {
-			for (let item of data.url) {
+			for (const item of data.url) {
 				path = path.replace(':' + item.key, item.value);
 			}
 		}
 		if (data.method === 'get' && data.payload) {
-			let queryParams = new URLSearchParams();
-			for (let key in data.payload) {
+			const queryParams = new URLSearchParams();
+			for (const key in data.payload) {
 				queryParams.set(key, data.payload[key]);
 			}
 			path += '?' + queryParams.toString();
