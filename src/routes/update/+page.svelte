@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { getCard, updateCard, getProjectStatus, resetGetCard } from '$lib/hooks/cards';
+	import { getCard, updateCard, resetGetCard } from '$lib/hooks/cards';
 	import { getCategories } from '$lib/hooks/categories';
 	import {
 		cardState,
 		cardCategoryState,
-		projectStatusState,
 		projectsState,
 		fetchStatus,
 		toast,
@@ -57,8 +56,9 @@
 
 		await getCard(cardId);
 
+		console.log($projectsState);
 		categoriesList = $cardCategoryState.data.map((cat: any) => ({ value: cat.id, name: cat.name }));
-		statusList = $projectsState.data.items[0].expand.workflow.expand.statuses.map((stat: any) => ({
+		statusList = $projectsState.data[0].expand.workflow.expand.statuses.map((stat: any) => ({
 			value: stat.id,
 			name: stat.name
 		}));
@@ -215,7 +215,7 @@
 
 				<div>
 					<Label for="status" class="mb-2">Status *</Label>
-					{#if $projectsState.status === fetchStatus.loading}
+					{#if $projectsState.status === fetchStatus.loading || $projectsState.status === fetchStatus.idle}
 						<div class="text-sm text-gray-500">Loading statuses...</div>
 					{:else if $projectsState.status === fetchStatus.success}
 						<Select class="mt-2" items={statusList} bind:value={status} />

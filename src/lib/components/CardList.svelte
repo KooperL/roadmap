@@ -1,13 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { getCard, getCards, getProjectStatus, resetGetCard, updateCard } from '$lib/hooks/cards';
-	import {
-		fetchStatus,
-		cardsState,
-		projectStatusState,
-		cardState,
-		projectsState
-	} from '$lib/app/stores';
+	import { getCard, getCards, resetGetCard, updateCard } from '$lib/hooks/cards';
+	import { fetchStatus, cardsState, cardState, projectsState } from '$lib/app/stores';
 	import Button from '$lib/components/Button.svelte';
 	import { PlusOutline, EditOutline } from 'flowbite-svelte-icons';
 	import { getProjects } from '$lib/hooks/projects';
@@ -60,12 +54,12 @@
 	{:else}
 		{#each $projectsState.data as project}
 			<div class="mb-4 flex items-center justify-between">
-				<h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+				<h2 class="pl-4 text-2xl font-bold text-gray-900 dark:text-white">
 					{project.name}
 				</h2>
 			</div>
 
-			<Table>
+			<Table class="mb-8">
 				<TableHead>
 					<TableHeadCell>Title</TableHeadCell>
 					<TableHeadCell>Category</TableHeadCell>
@@ -85,14 +79,14 @@
 								<TableBodyCell>{getPriority(card.priority)[1]}</TableBodyCell>
 								<TableBodyCell>{card.status}</TableBodyCell>
 								<TableBodyCell>
-									<Button
-										click={() => editCard(card.card)}
-										disable={!isAuthenticated}
-										className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 text-sm rounded flex items-center space-x-1"
-									>
-										<EditOutline class="h-3 w-3" />
-										<span>Edit</span>
-									</Button>
+									{#if isAuthenticated}
+										<div
+											on:click={() => editCard(card.card)}
+											class="flex h-full items-center justify-center rounded bg-gray-100 px-2 py-2 hover:bg-gray-200"
+										>
+											<EditOutline class="h-3 w-3" />
+										</div>
+									{/if}
 								</TableBodyCell>
 							</TableBodyRow>
 						{/if}
@@ -102,3 +96,4 @@
 		{/each}
 	{/if}
 </div>
+``
