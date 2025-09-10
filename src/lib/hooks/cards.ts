@@ -7,7 +7,6 @@ import {
 	createCardState,
 	deleteCardState,
 	fetchStatus,
-	projectStatusState,
 	updateCardState
 } from '../app/stores';
 import { logger } from '../logger';
@@ -307,42 +306,6 @@ export const cardComment = async (cardId: string, comment: string, action = 'add
 export const resetCardComment = () => {
 	logger.info('resetCardComment hook', 'Hook called');
 	commentCreateState.update((state) => ({
-		status: fetchStatus.idle,
-		errorMessage: undefined,
-		data: undefined
-	}));
-};
-
-export const getProjectStatus = async (workflowId: string) => {
-	try {
-		throw new Error('Remove this hook');
-		logger.info('getProjectStatus hook', 'Hook called');
-		projectStatusState.update((state) => ({
-			status: fetchStatus.loading,
-			errorMessage: undefined,
-			data: undefined
-		}));
-		console.log(workflowId);
-		const pbStatuses = await pb.collection('workflow').getOne(workflowId, { expand: 'statuses' });
-		projectStatusState.update((state) => ({
-			errorMessage: undefined,
-			status: fetchStatus.success,
-			data: pbStatuses.expand!.statuses
-		}));
-		logger.debug('getProjectStatus hook', 'Tenants fetched');
-	} catch (e: any) {
-		logger.error('getProjectStatus hook', e.message);
-		projectStatusState.update((state) => ({
-			status: fetchStatus.error,
-			data: undefined,
-			errorMessage: e.message
-		}));
-	}
-};
-
-export const resetGetProjectStatus = () => {
-	logger.info('resetGetProjectStatus hook', 'Hook called');
-	projectStatusState.update((state) => ({
 		status: fetchStatus.idle,
 		errorMessage: undefined,
 		data: undefined

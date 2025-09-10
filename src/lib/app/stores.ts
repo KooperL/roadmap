@@ -35,6 +35,12 @@ export const projectsState = writable<WritableState<any>>({
 	errorMessage: undefined
 });
 
+export const createProjectState = writable<WritableState<any>>({
+	status: fetchStatus.idle,
+	data: undefined,
+	errorMessage: undefined
+});
+
 export const commentCreateState = writable<WritableState<any>>({
 	status: fetchStatus.idle,
 	data: undefined,
@@ -77,7 +83,7 @@ export const cardCategoryState = writable<WritableState<any>>({
 	errorMessage: undefined
 });
 
-export const projectStatusState = writable<WritableState<any>>({
+export const workflowState = writable<WritableState<any>>({
 	status: fetchStatus.idle,
 	data: undefined,
 	errorMessage: undefined

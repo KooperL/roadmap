@@ -39,7 +39,7 @@
 		</NavBrand>
 		{#if $currentUser?.model?.id}
 			<NavBrand href="/">
-				<Button on:click={() => goto('/cards/create')} class="bg-blue-600 hover:bg-blue-700">
+				<Button on:click={() => window.location.assign('/cards/create')} class="bg-blue-600 hover:bg-blue-700">
 					<PlusOutline class="mr-2 h-4 w-4" />
 					Create
 				</Button>

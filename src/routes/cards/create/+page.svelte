@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { createCard, getProjectStatus, resetCreateCard } from '$lib/hooks/cards';
+	import { createCard, resetCreateCard } from '$lib/hooks/cards';
 	import { getCategories, resetGetCategories } from '$lib/hooks/categories';
 	import {
 		createCardState,
@@ -21,7 +21,9 @@
 		{ value: 6, name: 'High' },
 		{ value: 8, name: 'Critical' }
 	];
+	let projectList: { value: string; name: string }[] = [];
 
+	let projectId = '';
 	let title = '';
 	let body = '';
 	let category = '';
@@ -33,15 +35,17 @@
 		if ($projectsState.status !== fetchStatus.success) {
 			await getProjects();
 		}
+
 		if ($cardCategoryState.status !== fetchStatus.success) {
 			await getCategories();
 		}
 
+		if ($projectsState.status !== fetchStatus.success) {
+			await getProjects();
+		}
+
+		projectList = $projectsState.data.map((proj: any) => ({ value: proj.id, name: proj.name }));
 		categoriesList = $cardCategoryState.data.map((cat) => ({ value: cat.id, name: cat.name }));
-		statusList = $projectsState.data.items[0].expand.workflow.expand.statuses.map((stat) => ({
-			value: stat.id,
-			name: stat.name
-		}));
 	});
 
 	async function handleSubmit() {
@@ -75,6 +79,17 @@
 	function handleCancel() {
 		window.location.assign('/');
 	}
+
+	$: (async () => {
+		if (projectId && $projectsState.status !== fetchStatus.success) {
+			statusList = $projectsState.data
+				.find((proj) => proj.id === projectId)
+				.expand.workflow.expand.statuses.map((stat) => ({
+					value: stat.id,
+					name: stat.name
+				}));
+		}
+	})();
 </script>
 
 <svelte:head>
@@ -90,6 +105,11 @@
 	</div>
 
 	<form class="space-y-6">
+		<div>
+			<Label for="project" class="mb-2">Project</Label>
+			<Select class="mt-2" items={projectList} bind:value={projectId} />
+		</div>
+
 		<div>
 			<Label for="title" class="mb-2">Title *</Label>
 			<Input

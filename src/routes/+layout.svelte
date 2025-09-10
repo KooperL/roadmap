@@ -61,8 +61,21 @@
 	</main>
 	<Footer class="flex justify-center">
 		<FooterLinkGroup ulClass="flex">
-			<FooterLink href="/">/</FooterLink>
-			<FooterLink href="/login">Login</FooterLink>
+			<p class="cursor-pointer px-2 text-gray-900" on:click={() => window.location.assign('/')}>
+				/
+			</p>
+			<p
+				class="cursor-pointer px-2 text-gray-900"
+				on:click={() => window.location.assign('/login')}
+			>
+				Login
+			</p>
+			<p
+				class="cursor-pointer px-2 text-gray-900"
+				on:click={() => window.location.assign('/projects/create')}
+			>
+				New project
+			</p>
 		</FooterLinkGroup>
 	</Footer>
 </div>
