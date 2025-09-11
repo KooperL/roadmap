@@ -6,44 +6,45 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { logger } from '$lib/logger';
+	import PageLayout from '$lib/components/PageLayout.svelte';
+	import { site } from '$lib/config';
 
-	let username: string;
+	let email: string;
 	let password: string;
 	let errorState = false;
 	let returnTo = $page.url.searchParams.get('returnTo');
 
 	async function login() {
-		const authData = await pb.collection('users').authWithPassword(username, password);
+		const authData = await pb.collection('users').authWithPassword(email, password);
 	}
 
 	async function onSubmit(e) {
 		try {
 			await login();
-			goto(`/`);
+			window.location.assign(`/`);
 		} catch (e) {
-			console.error('Error authenticating user', username);
+			console.error('Error authenticating user', email);
 			errorState = true;
 		}
 	}
 </script>
+<svelte:head>
+	<title>Login | {site.name}</title>
+</svelte:head>
 
-<div class="rounded px-8 py-6 text-left shadow-lg dark:bg-gray-100">
-	<h3 class="text-center text-2xl font-bold">Login to your account</h3>
-	<p class="text-center">
-		Don't have an account? <a class="text-primary-700" href="/register">Register</a>
-	</p>
-	<form on:submit|preventDefault class="mt-4">
+<PageLayout title="Login" description="Login to your account to access more features">
+	<form on:submit|preventDefault={onSubmit} class="mt-4">
 		{#if errorState}
 			<p class="text-red-500">Invalid username or password</p>
 		{/if}
 		<div>
-			<label class="block" for="username">Username</label>
+			<label class="block" for="email">email</label>
 			<Input
-				data-testid="login-username-field"
-				id="username"
-				type="username"
-				bind:value={username}
-				placeholder="Username"
+				data-testid="login-email-field"
+				id="email"
+				type="email"
+				bind:value={email}
+				placeholder="email"
 			/>
 		</div>
 		<div class="mt-4">
@@ -68,4 +69,4 @@
 			>
 		</div>
 	</form>
-</div>
+</PageLayout>

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import CardList from '$lib/components/CardList.svelte';
 	import CardViewSimple from '$lib/components/CardViewSimple.svelte';
+	import { site } from '$lib/config';
 	import { onMount } from 'svelte';
 
 	let route: string | undefined = undefined;
@@ -11,6 +12,10 @@
 		}
 	});
 </script>
+<svelte:head>
+	<title>{site.name}</title>
+</svelte:head>
+
 
 {#if route === undefined}
 	Card not found

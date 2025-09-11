@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import { getCard, getCards, resetGetCard, updateCard } from '$lib/hooks/cards';
 	import { fetchStatus, cardsState, cardState, projectsState } from '$lib/app/stores';
-	import Button from '$lib/components/Button.svelte';
 	import { PlusOutline, EditOutline } from 'flowbite-svelte-icons';
 	import { getProjects } from '$lib/hooks/projects';
 	import {
@@ -96,4 +95,3 @@
 		{/each}
 	{/if}
 </div>
-``

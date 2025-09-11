@@ -12,20 +12,22 @@
 	import { createEventDispatcher } from 'svelte';
 	import TagInput from './TagInput.svelte';
 	import { cardPriority, getPriority } from '../config';
-	import TextArea from './TextArea.svelte';
-	import { Textarea, Input, Heading, P } from 'flowbite-svelte';
+	import { Textarea, Input, Heading, P, Badge, Button } from 'flowbite-svelte';
 	import { ClockSolid, FloppyDiskOutline, PenOutline, EditOutline } from 'flowbite-svelte-icons';
-	import Chip from './Chip.svelte';
-	import Button from './Button.svelte';
 	import moment from 'moment';
 	import CardComments from './CardComments.svelte';
+	import { pb } from '$lib/pocketbase';
 
 	export let cardId: string;
-	const dispatch = createEventDispatcher();
+
+	let isAuthenticated = false;
 
 	onMount(async () => {
 		if ($cardState.status != fetchStatus.success || $cardState.data.id !== cardId) {
 			await getCard(cardId);
+		}
+		if (pb.authStore.isValid) {
+			isAuthenticated = true;
 		}
 	});
 
@@ -73,21 +75,21 @@
 			>
 				<div class="flex flex-wrap items-center justify-between gap-3">
 					<div class="flex items-center space-x-3">
-						<Chip rounded color="gray" className="bg-white">
+						<Badge rounded color="gray" className="bg-white">
 							{$cardState.data.category}
-						</Chip>
-						<Chip border className="bg-white dark:bg-gray-800">
+						</Badge>
+						<Badge border class="bg-white dark:bg-gray-800">
 							<ClockSolid class="me-1.5 h-2.5 w-2.5 text-primary-800 dark:text-primary-400" />
 							{moment($cardState.data.created).fromNow()}
-						</Chip>
+						</Badge>
 					</div>
 					<div class="flex items-center space-x-2">
-						<Chip color={getPriority($cardState.data.priority)[0]} className="font-semibold">
+						<Badge color={getPriority($cardState.data.priority)[0]} className="font-semibold">
 							{getPriority($cardState.data.priority)[1]}
-						</Chip>
-						<Chip border color="gray" className="bg-gray-400">
+						</Badge>
+						<Badge border color="gray" className="bg-gray-400">
 							{$cardState.data.status}
-						</Chip>
+						</Badge>
 					</div>
 				</div>
 			</div>
@@ -97,13 +99,15 @@
 					<Heading tag="h1" class="text-3xl font-bold leading-tight text-gray-900 dark:text-white">
 						{$cardState.data.title}
 					</Heading>
-					<Button
-						click={() => window.location.assign(`/update?cardId=${cardId}`)}
-						className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
-					>
-						<EditOutline class="h-4 w-4" />
-						<span>Edit</span>
-					</Button>
+					{#if isAuthenticated}
+						<Button
+							on:click={() => window.location.assign(`/update?cardId=${cardId}`)}
+							class="flex items-center space-x-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+						>
+							<EditOutline class="h-4 w-4" />
+							<span>Edit</span>
+						</Button>
+					{/if}
 				</div>
 			</div>
 
@@ -122,13 +126,13 @@
 						<div class="mb-3 block text-sm font-medium text-gray-700 dark:text-gray-300">Tags</div>
 						<div class="flex flex-wrap gap-2">
 							{#each $cardState.data.tags as tag}
-								<Chip
+								<Badge
 									rounded
 									color="indigo"
-									className="px-3 py-1 text-sm font-medium transition-all duration-200 hover:shadow-md transform hover:-translate-y-0.5"
+									class="transform px-3 py-1 text-sm font-medium transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
 								>
 									{typeof tag === 'object' ? tag.name : tag}
-								</Chip>
+								</Badge>
 							{/each}
 						</div>
 					</div>

@@ -2,16 +2,11 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { createCard, resetCreateCard } from '$lib/hooks/cards';
-	import { getCategories, resetGetCategories } from '$lib/hooks/categories';
-	import {
-		createCardState,
-		cardCategoryState,
-		projectsState,
-		fetchStatus,
-		toast
-	} from '$lib/app/stores';
+	import { createCardState, projectsState, fetchStatus, toast } from '$lib/app/stores';
 	import { Label, Select, Input, Textarea, Button } from 'flowbite-svelte';
 	import { getProjects } from '$lib/hooks/projects';
+	import PageLayout from '$lib/components/PageLayout.svelte';
+	import { site } from '$lib/config';
 
 	let categoriesList: { value: string; name: string }[] = [];
 	let statusList: { value: string; name: string }[] = [];
@@ -27,7 +22,7 @@
 	let title = '';
 	let body = '';
 	let category = '';
-	let priority = 'medium';
+	let priority = '';
 	let status = '';
 	let tags = '';
 
@@ -36,24 +31,14 @@
 			await getProjects();
 		}
 
-		if ($cardCategoryState.status !== fetchStatus.success) {
-			await getCategories();
-		}
-
 		if ($projectsState.status !== fetchStatus.success) {
 			await getProjects();
 		}
 
 		projectList = $projectsState.data.map((proj: any) => ({ value: proj.id, name: proj.name }));
-		categoriesList = $cardCategoryState.data.map((cat) => ({ value: cat.id, name: cat.name }));
 	});
 
 	async function handleSubmit() {
-		if (false) {
-			toast.set({ text: 'Please fill in all required fields', icon: 'error' });
-			return;
-		}
-
 		const cardDetails = {
 			title: title.trim(),
 			body: body.trim(),
@@ -80,30 +65,26 @@
 		window.location.assign('/');
 	}
 
-	$: (async () => {
-		if (projectId && $projectsState.status !== fetchStatus.success) {
-			statusList = $projectsState.data
-				.find((proj) => proj.id === projectId)
-				.expand.workflow.expand.statuses.map((stat) => ({
-					value: stat.id,
-					name: stat.name
-				}));
-		}
-	})();
+	$: statusList = $projectsState.data
+		?.find?.((proj) => proj.id === projectId)
+		?.expand?.workflow?.expand?.statuses?.map?.((stat) => ({
+			value: stat.id,
+			name: stat.name
+		}));
+
+	$: categoriesList = $projectsState.data
+		?.find?.((proj) => proj.id === projectId)
+		?.expand?.workflow?.expand?.categories?.map?.((cat) => ({
+			value: cat.id,
+			name: cat.name
+		}));
 </script>
 
 <svelte:head>
-	<title>Create Card | Roadmap</title>
+	<title>Create Card | {site.name}</title>
 </svelte:head>
 
-<div class="container mx-auto max-w-2xl p-4">
-	<div class="mb-6">
-		<h1 class="text-3xl font-bold text-gray-900 dark:text-white">Create New Card</h1>
-		<p class="mt-2 text-gray-600 dark:text-gray-400">
-			Fill in the details to create a new roadmap card
-		</p>
-	</div>
-
+<PageLayout title="Create New Card" description="Fill in the details to create a new roadmap card">
 	<form class="space-y-6">
 		<div>
 			<Label for="project" class="mb-2">Project</Label>
@@ -117,7 +98,7 @@
 				bind:value={title}
 				placeholder="Enter card title..."
 				required
-				className="w-full"
+				class="w-full"
 			/>
 		</div>
 
@@ -136,9 +117,9 @@
 		<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 			<div>
 				<Label for="category" class="mb-2">Category *</Label>
-				{#if $cardCategoryState.status === fetchStatus.loading}
+				{#if $projectsState.status === fetchStatus.loading}
 					<div class="text-sm text-gray-500">Loading categories...</div>
-				{:else if $cardCategoryState.status === fetchStatus.success}
+				{:else if $projectsState.status === fetchStatus.success}
 					<Select class="mt-2" items={categoriesList} bind:value={category} />
 				{:else}
 					<div class="text-sm text-gray-500">No categories available</div>
@@ -187,10 +168,4 @@
 			</Button>
 		</div>
 	</form>
-</div>
-
-{#if $cardCategoryState.status === fetchStatus.error}
-	<div class="mt-4 rounded-lg bg-red-50 p-4 text-red-700 dark:bg-red-900 dark:text-red-200">
-		Error loading categories: {$cardCategoryState.errorMessage}
-	</div>
-{/if}
+</PageLayout>

@@ -12,11 +12,8 @@
 	import { createEventDispatcher } from 'svelte';
 	import TagInput from './TagInput.svelte';
 	import { cardPriority } from '../config';
-	import TextArea from './TextArea.svelte';
-	import { Textarea, Input, Heading, P } from 'flowbite-svelte';
+	import { Textarea, Input, Heading, P, Button } from 'flowbite-svelte';
 	import { ClockSolid, FloppyDiskOutline, PenOutline } from 'flowbite-svelte-icons';
-	import Chip from './Chip.svelte';
-	import Button from './Button.svelte';
 	import moment from 'moment';
 
 	let commentDraft = '';
@@ -32,7 +29,7 @@
 
 <div class="flex gap-2">
 	<Input placeholder="Is there anything you'd like to add?" bind:value={commentDraft} class="" />
-	<Button class="" click={handleCommentSubmit} disabled={!commentDraft.trim()}>Post</Button>
+	<Button class="" on:click={handleCommentSubmit} disabled={!commentDraft.trim()}>Post</Button>
 </div>
 <div class="flex flex-col gap-2">
 	{#if $cardState.data?.comments?.length}
