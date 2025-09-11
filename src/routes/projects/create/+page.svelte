@@ -3,6 +3,8 @@
 	import { createProject, getWorkflows, resetCreateProject } from '$lib/hooks/projects';
 	import { Button, Input, Label, Select } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
+	import PageLayout from '$lib/components/PageLayout.svelte';
+	import { site } from '$lib/config';
 
 	let name = '';
 	let workflowItems = [];
@@ -27,14 +29,12 @@
 		window.location.assign(`/cards/create`);
 	}
 </script>
+<svelte:head>
+	<title>Create Project | {site.name}</title>
+</svelte:head>
 
-<div class="container mx-auto max-w-2xl p-4">
-	<div class="mb-6">
-		<h1 class="text-3xl font-bold text-gray-900 dark:text-white">Create New Project</h1>
-		<p class="mt-2 text-gray-600 dark:text-gray-400">Fill in the details to create a new project</p>
-	</div>
-
-	<form class="space-y-6">
+<PageLayout title="Create New Project" description="Fill in the details to create a new project">
+	<form class="space-y-6" on:submit|preventDefault={handleSubmit}>
 		<div>
 			<Label for="title" class="mb-2">Title *</Label>
 			<Input
@@ -52,7 +52,7 @@
 			<p class="text-red-500">Error loading workflows: {$workflowState.errorMessage}</p>
 		{:else if $workflowState.status === fetchStatus.success}
 			<Label for="project" class="mb-2">Workflow</Label>
-			<Select class="mt-2" items={workflowItems} bind:value={workflow} />
+			<Select class="" items={workflowItems} bind:value={workflow} />
 		{/if}
 
 		<div class="flex flex-col gap-3 pt-6 sm:flex-row sm:justify-end">
@@ -65,4 +65,4 @@
 			</Button>
 		</div>
 	</form>
-</div>
+</PageLayout>

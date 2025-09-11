@@ -2,17 +2,10 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { getCard, updateCard, resetGetCard } from '$lib/hooks/cards';
-	import { getCategories } from '$lib/hooks/categories';
-	import {
-		cardState,
-		cardCategoryState,
-		projectsState,
-		fetchStatus,
-		toast,
-		updateCardState
-	} from '$lib/app/stores';
+	import { cardState, projectsState, fetchStatus, toast, updateCardState } from '$lib/app/stores';
 	import { Label, Select, Input, Textarea, Button } from 'flowbite-svelte';
 	import { getProjects } from '$lib/hooks/projects';
+	import { site } from '$lib/config';
 
 	let categoriesList: { value: string; name: string }[] = [];
 	let statusList: { value: string; name: string }[] = [];
@@ -30,6 +23,7 @@
 	let priority = '';
 	let status = '';
 	let tags = '';
+
 	let originalTitle = '';
 	let originalBody = '';
 	let originalCategory = '';
@@ -50,14 +44,13 @@
 		if ($projectsState.status !== fetchStatus.success) {
 			await getProjects();
 		}
-		if ($cardCategoryState.status !== fetchStatus.success) {
-			await getCategories();
-		}
 
 		await getCard(cardId);
 
-		console.log($projectsState);
-		categoriesList = $cardCategoryState.data.map((cat: any) => ({ value: cat.id, name: cat.name }));
+		categoriesList = $projectsState.data[0].expand.workflow.expand.categories.map((cat: any) => ({
+			value: cat.id,
+			name: cat.name
+		}));
 		statusList = $projectsState.data[0].expand.workflow.expand.statuses.map((stat: any) => ({
 			value: stat.id,
 			name: stat.name
@@ -132,7 +125,7 @@
 			}
 
 			toast.set({ text: 'Card updated successfully!', icon: 'success' });
-			goto(`/cards?cardId=${cardId}`);
+			window.location.assign(`/cards?cardId=${cardId}`);
 		} catch (error) {
 			console.error('Error updating card:', error);
 			toast.set({ text: 'Failed to update card', icon: 'error' });
@@ -140,7 +133,7 @@
 	}
 
 	function handleCancel() {
-		goto(`/cards?cardId=${cardId}`);
+		window.location.assign(`/cards?cardId=${cardId}`);
 	}
 
 	$: hasChanges =
@@ -153,7 +146,7 @@
 </script>
 
 <svelte:head>
-	<title>Update Card | Roadmap</title>
+	<title>Update Card | {site.name}</title>
 </svelte:head>
 
 <div class="container mx-auto max-w-2xl p-4">
@@ -204,9 +197,9 @@
 			<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 				<div>
 					<Label for="category" class="mb-2">Category *</Label>
-					{#if $cardCategoryState.status === fetchStatus.loading}
+					{#if $projectsState.status === fetchStatus.loading}
 						<div class="text-sm text-gray-500">Loading categories...</div>
-					{:else if $cardCategoryState.status === fetchStatus.success}
+					{:else if $projectsState.status === fetchStatus.success}
 						<Select class="mt-2" items={categoriesList} bind:value={category} />
 					{:else}
 						<div class="text-sm text-gray-500">No categories available</div>
@@ -265,15 +258,3 @@
 		</form>
 	{/if}
 </div>
-
-{#if $cardCategoryState.status === fetchStatus.error}
-	<div class="mt-4 rounded-lg bg-red-50 p-4 text-red-700 dark:bg-red-900 dark:text-red-200">
-		Error loading categories: {$cardCategoryState.errorMessage}
-	</div>
-{/if}
-
-{#if $projectsState.status === fetchStatus.error}
-	<div class="mt-4 rounded-lg bg-red-50 p-4 text-red-700 dark:bg-red-900 dark:text-red-200">
-		Error loading statuses: {$projectsState.errorMessage}
-	</div>
-{/if}

@@ -1,6 +1,6 @@
 export const site = {
-	name: 'name',
-	description: 'Description of the site'
+	name: 'Roadmap',
+	description: ''
 };
 
 export const cardPriority = {

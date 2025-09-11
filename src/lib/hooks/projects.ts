@@ -18,7 +18,7 @@ export const getProjects = async () => {
 		}));
 		const pbTenants = await pb
 			.collection('project')
-			.getFullList({ expand: 'workflow, workflow.statuses' });
+			.getFullList({ expand: 'workflow, workflow.statuses, workflow.categories' });
 		projectsState.update((state) => ({
 			errorMessage: undefined,
 			status: fetchStatus.success,
@@ -90,14 +90,17 @@ export const getWorkflows = async () => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const pbTenants = await pb.collection('workflow').getFullList({ expand: 'statuses' });
+		const pbTenants = await pb
+			.collection('workflow')
+			.getFullList({ expand: 'statuses,categories' });
 		workflowState.update((state) => ({
 			errorMessage: undefined,
 			status: fetchStatus.success,
 			data: pbTenants.map((workflow) => ({
 				id: workflow.id,
 				name: workflow.name,
-				statuses: workflow?.expand?.statuses
+				statuses: workflow?.expand?.statuses,
+				categories: workflow?.expand?.categories
 			}))
 		}));
 		logger.debug('getWorkflows hook', 'Workflows fetched');
