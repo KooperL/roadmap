@@ -48,7 +48,8 @@
 			tags: tags
 				.split(',')
 				.map((tag) => tag.trim())
-				.filter((tag) => tag !== '')
+				.filter((tag) => tag !== ''),
+			project: projectId
 		};
 
 		await createCard(cardDetails);
