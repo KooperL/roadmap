@@ -134,7 +134,7 @@ export const createCard = async (details: any) => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const putCardResult = await pb.collection('card').create({});
+		const putCardResult = await pb.collection('card').create({ project: details.project, user: get(currentUser).record?.id });
 
 		await Promise.all([
 			pb.collection('title_tracked').create({
