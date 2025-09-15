@@ -12,7 +12,7 @@ import {
 import { logger } from '../logger';
 import { pb, currentUser } from '../pocketbase';
 
-export const getCards = async (projectId: string) => {
+export const getCards = async (projectName: string) => {
 	try {
 		logger.info('getCards hook', 'Hook called');
 		cardsState.update((state) => ({
@@ -21,7 +21,7 @@ export const getCards = async (projectId: string) => {
 			data: undefined
 		}));
 		const fetchCardsResult = await pb.collection('cardsShallow').getFullList({
-			// filter: 'project = "projectId"'
+			...( projectName && { filter: `project = ${projectName}` } )
 		});
 		cardsState.update((state) => ({
 			errorMessage: undefined,

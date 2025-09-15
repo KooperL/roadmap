@@ -24,7 +24,7 @@
 
 	onMount(async () => {
 		if ($projectsState.status !== fetchStatus.success) {
-			getProjects();
+			await getProjects();
 		}
 
 		if (pb.authStore.isValid) {
@@ -32,7 +32,7 @@
 		}
 
 		if ($cardsState.status !== fetchStatus.success) {
-			await getCards($projectsState.data?.id);
+			await getCards();
 		}
 	});
 
