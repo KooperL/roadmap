@@ -35,9 +35,12 @@
 		if (pb.authStore.isValid) {
 			isAuthenticated = true;
 		}
+    organiseResponses()
+	});
 
-		console.log( $workflowState)
-		console.log( $projectsState)
+  $: organiseResponses()
+
+  function organiseResponses() {
 		$projectsState.data.forEach(project => {
 			const projName = project.name
 			const statuses = $workflowState.data.find(workflow => workflow.id === project.workflow)?.statuses
@@ -56,10 +59,7 @@
 				cardsByStatusByProject[projName][statusName].cards.push(card);
 			}
 		})
-
-		console.log(cardsByStatusByProject);
-
-	});
+  }
 
 	function openCard(cardId: string) {
 		window.location.assign(`cards?cardId=${cardId}`);
@@ -85,6 +85,7 @@
 				</div>
 
 				<div class="flex gap-4 overflow-x-auto pb-4 justify-center">
+            <div>{getVisibleStatusesForProject(project.name)}</div>
 					{#each getVisibleStatusesForProject(project.name) as [statusName, statusData]}
 						<div class="flex-shrink-0 w-80">
 							<div class="bg-gray-100 dark:bg-gray-800 rounded-t-lg px-4 py-3 border-b {

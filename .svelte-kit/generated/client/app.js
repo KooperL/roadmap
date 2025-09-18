@@ -14,26 +14,22 @@ export const nodes = [
 export const server_loads = [];
 
 export const dictionary = {
-	'/': [2],
-	'/cards': [3],
-	'/cards/create': [4],
-	'/login': [5],
-	'/projects/create': [6],
-	'/update': [7]
-};
+		"/": [2],
+		"/cards": [3],
+		"/cards/create": [4],
+		"/login": [5],
+		"/projects/create": [6],
+		"/update": [7]
+	};
 
 export const hooks = {
-	handleError: ({ error }) => {
-		console.error(error);
-	},
-
-	reroute: () => {},
+	handleError: (({ error }) => { console.error(error) }),
+	
+	reroute: (() => {}),
 	transport: {}
 };
 
-export const decoders = Object.fromEntries(
-	Object.entries(hooks.transport).map(([k, v]) => [k, v.decode])
-);
+export const decoders = Object.fromEntries(Object.entries(hooks.transport).map(([k, v]) => [k, v.decode]));
 
 export const hash = false;
 

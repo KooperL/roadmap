@@ -7,6 +7,7 @@
 
 	onMount(() => {});
 </script>
+
 <svelte:head>
 	<title>Cards | {site.name}</title>
 </svelte:head>
