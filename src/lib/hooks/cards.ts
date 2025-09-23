@@ -12,7 +12,7 @@ import {
 import { logger } from '../logger';
 import { pb, currentUser } from '../pocketbase';
 
-export const getCards = async (projectName: string) => {
+export const getCards = async (projectName: any) => {
 	try {
 		logger.info('getCards hook', 'Hook called');
 		cardsState.update((state) => ({
@@ -21,7 +21,7 @@ export const getCards = async (projectName: string) => {
 			data: undefined
 		}));
 		const fetchCardsResult = await pb.collection('cardsShallow').getFullList({
-			...( projectName && { filter: `project = ${projectName}` } )
+			...((projectName && projectName !== '-1') && { filter: `project = ${projectName}` })
 		});
 		cardsState.update((state) => ({
 			errorMessage: undefined,
@@ -134,7 +134,9 @@ export const createCard = async (details: any) => {
 			errorMessage: undefined,
 			data: undefined
 		}));
-		const putCardResult = await pb.collection('card').create({ project: details.project, user: get(currentUser).record?.id });
+		const putCardResult = await pb
+			.collection('card')
+			.create({ project: details.project, user: get(currentUser).record?.id });
 
 		await Promise.all([
 			pb.collection('title_tracked').create({

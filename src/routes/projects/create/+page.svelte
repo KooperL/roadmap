@@ -29,6 +29,7 @@
 		window.location.assign(`/cards/create`);
 	}
 </script>
+
 <svelte:head>
 	<title>Create Project | {site.name}</title>
 </svelte:head>

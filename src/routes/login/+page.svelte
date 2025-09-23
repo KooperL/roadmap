@@ -28,6 +28,7 @@
 		}
 	}
 </script>
+
 <svelte:head>
 	<title>Login | {site.name}</title>
 </svelte:head>

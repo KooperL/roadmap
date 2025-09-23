@@ -64,18 +64,22 @@
 			<p class="cursor-pointer px-2 text-gray-900" on:click={() => window.location.assign('/')}>
 				/
 			</p>
-			<p
-				class="cursor-pointer px-2 text-gray-900"
-				on:click={() => window.location.assign('/login')}
-			>
-				Login
-			</p>
-			<p
-				class="cursor-pointer px-2 text-gray-900"
-				on:click={() => window.location.assign('/projects/create')}
-			>
-				New project
-			</p>
+			{#if !pb?.authStore?.isValid}
+				<p
+					class="cursor-pointer px-2 text-gray-900"
+					on:click={() => window.location.assign('/login')}
+				>
+					Login
+				</p>
+			{/if}
+			{#if pb?.authStore?.isValid}
+				<p
+					class="cursor-pointer px-2 text-gray-900"
+					on:click={() => window.location.assign('/projects/create')}
+				>
+					New project
+				</p>
+			{/if}
 		</FooterLinkGroup>
 	</Footer>
 </div>

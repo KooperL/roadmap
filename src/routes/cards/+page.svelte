@@ -12,10 +12,10 @@
 		}
 	});
 </script>
+
 <svelte:head>
 	<title>{site.name}</title>
 </svelte:head>
-
 
 {#if route === undefined}
 	Card not found
